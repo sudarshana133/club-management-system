@@ -18,12 +18,14 @@ model User{
   password String
   role UserType
   clubName String
+  members Member[]
 }
 
 model Club{
   uId String @id @default(uuid())
   clubName String
   events Event[]
+  members Member[]
 }
 
 model Event{
@@ -35,4 +37,15 @@ model Event{
   fees Int?
   club Club  @relation(fields: [clubId],references: [uId])
   clubId String
+  coordinators Member[]
+}
+
+model Member{
+  uId String @id @default(uuid())
+  user User @relation(fields: [studentId],references: [uId])
+  studentId String
+  club Club @relation(fields: [clubId],references: [uId])
+  clubId String
+  event Event @relation(fields: [coordinatorId],references: [uId])
+  coordinatorId String
 }
