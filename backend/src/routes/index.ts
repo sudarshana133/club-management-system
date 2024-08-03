@@ -8,4 +8,4 @@ router.use('/user',userRouter);
 router.use('/club',clubRouter);
 router.use('/event',eventRouter);
 
-export default router
+export default router;
