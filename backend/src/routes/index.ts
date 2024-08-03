@@ -7,3 +7,5 @@ const router = express.Router();
 router.use('/user',userRouter);
 router.use('/club',clubRouter);
 router.use('/event',eventRouter);
+
+export default router
