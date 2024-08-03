@@ -7,45 +7,49 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum UserType{
+enum UserType {
   ADMIN
   STUDENT
 }
 
-model User{
-  uId String @id @default(uuid())
-  email String @unique
-  password String
-  role UserType
+model User {
+  uId              String   @id @default(uuid())
+  email            String   @unique
+  password         String
+  clubName         String
+  eventId          String
+  role             UserType
+  members          Member[]
+  registeredEvents Event[]
+}
+
+model Club {
+  uId      String   @id @default(uuid())
   clubName String
-  members Member[]
+  events   Event[]
+  members  Member[]
 }
 
-model Club{
-  uId String @id @default(uuid())
-  clubName String
-  events Event[]
-  members Member[]
+model Event {
+  uId                String   @id @default(uuid())
+  title              String
+  description        String
+  date               DateTime
+  venue              String
+  fees               Int?
+  clubId             String
+  coordinators       Member[]
+  registeredStudents User[]
+  club               Club     @relation(fields: [clubId], references: [uId])
 }
 
-model Event{
-  uId String @id @default(uuid())
-  title String
-  description String
-  date DateTime
-  venue String
-  fees Int?
-  club Club  @relation(fields: [clubId],references: [uId])
-  clubId String
-  coordinators Member[]
-}
-
-model Member{
-  uId String @id @default(uuid())
-  user User @relation(fields: [studentId],references: [uId])
-  studentId String
-  club Club @relation(fields: [clubId],references: [uId])
-  clubId String
-  event Event @relation(fields: [coordinatorId],references: [uId])
+model Member {
+  studentId     String
+  clubId        String
   coordinatorId String
+  user          User   @relation(fields: [studentId], references: [uId])
+  club          Club   @relation(fields: [clubId], references: [uId])
+  event         Event  @relation(fields: [coordinatorId], references: [uId])
+
+  @@id([studentId, clubId])
 }
