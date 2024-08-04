@@ -9,5 +9,8 @@ const signUpSchema = zod.object({
     password: zod.string().min(8).max(15),
     role: zod.enum(["ADMIN", "STUDENT"])
 })
-
-export { signUpSchema, signinSchema }
+const registerForEventSchema = zod.object({
+    eventId: zod.string(),
+    userId: zod.string()
+});
+export { signUpSchema, signinSchema, registerForEventSchema }
