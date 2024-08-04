@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { signinSchema, signUpSchema } from "../zod";
-import { PrismaClient } from "@prisma/client";
+import { registerForEventSchema, signinSchema, signUpSchema } from "../zod";
+import { PrismaClient } from '@prisma/client'
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
@@ -60,7 +60,7 @@ const signup = async (req: Request, res: Response) => {
         msg: "user exists",
       });
     }
-  } catch (err) {
+  }catch (err) {
     return res.status(400).json({
       msg: "couldnt search the database",
     });
@@ -84,4 +84,32 @@ const signup = async (req: Request, res: Response) => {
     msg: "user added",
   });
 };
-export { signin, signup };
+
+const eventRegistration = async (req: Request, res: Response) => {
+  const { eventId, userId } = req.body;
+  if (!eventId || !userId) return res.status(403).json({ msg: "Missing event id and user id" });
+  const resFromZod = registerForEventSchema.safeParse({ eventId, userId });
+  if (!resFromZod.success) return res.status(403).json({ msg: "zod error" });
+
+  try {
+    const user = await prisma.user.findFirst({ where: { uId: userId } });
+    if (!user) return res.status(404).json({ msg: "user not found" });
+
+    const event = await prisma.event.findFirst({ where: { uId: eventId } });
+    if (!event) return res.status(404).json({ msg: "Event not found" });
+
+    const response = prisma.event.update({
+      where: {
+        uId: eventId,
+      },
+      data: {
+        registeredStudents: {
+          connect: { uId: userId }
+        }
+      }
+    })
+  } catch (error: any) {
+    res.status(500).json({ msg: "Error" + error.message });
+  }
+};
+export { signin, signup, eventRegistration };
