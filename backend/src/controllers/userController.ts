@@ -1,12 +1,38 @@
 import { Request, Response } from "express";
-import { signUpSchema } from "../zod";
-import zod from "zod";
-import { PrismaClient } from "@prisma/client";
+import { signinSchema,signUpSchema } from "../zod";
+import { PrismaClient } from '@prisma/client'
 import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
+const signin = async (req: Request, res: Response) => {
+    const { email, password } = req.body;
+    if(!email || !password) return res.status(403).json({ msg:"Missing email or password"});
+    const resFromZod = signinSchema.safeParse({ email, password });
+    if (!resFromZod.success) {
+        return res.status(401).json({ msg: "zod error" });
+    }
+    try {
+        const user = await prisma.user.findFirst({
+            where: {
+                email: email,
+            }
+        });
+        if (!user) {
+            return res.status(401).json({ msg: "Email or password is incorrect." });
+        }
+        
+        const isPasswordValid = await bcrypt.compare(password, user.password);
 
-const signin = (req: Request, res: Response) => {};
+        if (!isPasswordValid) {
+            return res.status(401).json({ msg: "Email or password is incorrect." });
+        }
+
+        res.status(200).json({ msg: "Success!" });
+    } catch (error: any) {
+        res.status(500).json({ msg: "Error: " + error.message });
+    }
+}
+
 const signup = async (req: Request, res: Response) => {
   const body = req.body;
   const userDetails = {
