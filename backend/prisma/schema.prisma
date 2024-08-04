@@ -20,7 +20,7 @@ model User {
   eventId          String?
   role             UserType
   members          Member[]
-  registeredEvents Event[]
+  registeredEvents RegisteredEvent[]
   adminOf          Club?
 }
 
@@ -42,7 +42,7 @@ model Event {
   fees               Int?     @default(0)
   clubId             String
   coordinators       Member[]
-  registeredStudents User[]
+  registeredStudents RegisteredEvent[]
   club               Club     @relation(fields: [clubId], references: [uId])
 }
 
@@ -55,4 +55,12 @@ model Member {
   event         Event  @relation(fields: [coordinatorId], references: [uId])
 
   @@id([studentId, clubId])
+}
+
+model RegisteredEvent{
+  userId String
+  eventId String
+  user User @relation(fields: [userId],references: [uId])
+  event Event @relation(fields: [eventId],references: [uId])
+  @@id([userId,eventId])
 }
