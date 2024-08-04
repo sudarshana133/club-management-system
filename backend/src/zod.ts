@@ -13,4 +13,11 @@ const registerForEventSchema = zod.object({
     eventId: zod.string(),
     userId: zod.string()
 });
-export { signUpSchema, signinSchema, registerForEventSchema }
+const addEventSchema = zod.object({
+    title:zod.string(),
+    description:zod.string(),
+    venue:zod.string(),
+    date:zod.string(),
+    clubId:zod.string()
+})
+export { signUpSchema, signinSchema, registerForEventSchema, addEventSchema}
