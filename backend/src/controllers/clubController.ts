@@ -23,5 +23,20 @@ const addClub = async (req: customReq, res: Response) => {
         res.status(500).json({ msg: "Error" + error.message });
     }
 }
-
-export { addClub };
+const deleteClub = async (req: customReq, res: Response) => {
+    const { clubName } = req.body;
+    const userId = req.userId;
+    const role = req.role;
+    if (!clubName || !userId || !role) return res.status(403).json({ msg: "Missing details" });
+    try {
+        await prisma.club.delete({
+            where: {
+                clubName,
+            }
+        });
+        res.status(200).json({ msg: "Deleted club successfully" });
+    } catch (error: any) {
+        res.status(500).json({ msg: "Error" + error.message });
+    }
+};
+export { addClub, deleteClub };
