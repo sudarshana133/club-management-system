@@ -21,6 +21,7 @@ model User {
   role             UserType
   members          Member[]
   registeredEvents Event[]
+  adminOf          Club?
 }
 
 model Club {
@@ -28,6 +29,8 @@ model Club {
   clubName String
   events   Event[]
   members  Member[]
+  admin    User     @relation(fields: [adminId], references: [uId])
+  adminId  String   @unique
 }
 
 model Event {

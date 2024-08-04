@@ -1,7 +1,9 @@
 import express from "express";
-import { signin, signup } from "../controllers/userController"
+import { eventRegistration, signin, signup } from "../controllers/userController"
+import authMiddleware from "../controllers/middleware";
 const userRouter = express.Router();
 userRouter.post("/signin", signin);
 userRouter.post("/signup", signup);
-userRouter.post("/event/register", )
+userRouter.use(authMiddleware);
+userRouter.post("/event/register", eventRegistration);
 export { userRouter };
