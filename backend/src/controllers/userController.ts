@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { registerForEventSchema, signinSchema, signUpSchema } from "../zod";
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { customReq } from "./middleware";
@@ -29,9 +29,12 @@ const signin = async (req: Request, res: Response) => {
     if (!isPasswordValid) {
       return res.status(401).json({ msg: "Email or password is incorrect." });
     }
-    const token = jwt.sign({id:user.uId,email:user.email,role:user.role},process.env.JWT_SECRET as string);
+    const token = jwt.sign(
+      { id: user.uId, email: user.email, role: user.role },
+      process.env.JWT_SECRET as string
+    );
 
-    res.status(200).json({ msg: "Success!",token});
+    res.status(200).json({ msg: "Success!", token });
   } catch (error: any) {
     res.status(500).json({ msg: "Error: " + error.message });
   }
@@ -61,7 +64,7 @@ const signup = async (req: Request, res: Response) => {
         msg: "user exists",
       });
     }
-  }catch (err) {
+  } catch (err) {
     return res.status(400).json({
       msg: "couldnt search the database",
     });
@@ -87,9 +90,10 @@ const signup = async (req: Request, res: Response) => {
 };
 
 const eventRegistration = async (req: customReq, res: Response) => {
-  const { eventId} = req.body;
-  const userId = (req.userId || "")as string;
-  if (!eventId || !userId) return res.status(403).json({ msg: "Missing event id and user id" });
+  const { eventId } = req.body;
+  const userId = (req.userId || "") as string;
+  if (!eventId || !userId)
+    return res.status(403).json({ msg: "Missing event id and user id" });
   const resFromZod = registerForEventSchema.safeParse({ eventId, userId });
   if (!resFromZod.success) return res.status(403).json({ msg: "zod error" });
 
@@ -101,14 +105,14 @@ const eventRegistration = async (req: customReq, res: Response) => {
     if (!event) return res.status(404).json({ msg: "Event not found" });
 
     const response = await prisma.registeredEvent.create({
-      data:{
+      data: {
         userId,
-        eventId
-      }
-    })
+        eventId,
+      },
+    });
     return res.status(200).json({
-      msg:"registered succesfully"
-    })
+      msg: "registered succesfully",
+    });
   } catch (error: any) {
     res.status(500).json({ msg: "Error" + error.message });
   }

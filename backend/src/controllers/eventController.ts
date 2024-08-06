@@ -44,4 +44,33 @@ const addEvent = async (req: Request, res: Response) => {
         })
     }
 }
-export { addEvent };
+const getAllEvents = async (req:Request,res:Response)=>{
+    try{
+        const response = await prisma.event.findMany();
+        return res.json({msg:response});
+    }catch(err){
+        return res.json({
+            msg:err
+        })
+    }
+}
+
+const getSpecificEvent = async (req:Request,res:Response)=>{
+    const clubId = req.params.clubId;
+    try{
+        const response = await prisma.event.findMany({
+            where:{
+                clubId
+            }
+        })
+        return res.status(200).json({
+            msg:response,
+            second:req.params.second
+        })
+    }catch(err){
+        return res.status(500).json({
+            msg:err
+        })
+    }
+}
+export { addEvent,getAllEvents,getSpecificEvent };
