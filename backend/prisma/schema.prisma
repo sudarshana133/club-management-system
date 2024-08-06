@@ -13,10 +13,10 @@ enum UserType {
 }
 
 model User {
-  uId              String   @id @default(uuid())
-  email            String   @unique
+  uId              String            @id @default(uuid())
+  email            String            @unique
   password         String
-  clubName         String?  @unique
+  clubName         String?           @unique
   eventId          String?
   role             UserType
   members          Member[]
@@ -34,33 +34,42 @@ model Club {
 }
 
 model Event {
-  uId                String   @id @default(uuid())
+  uId                String            @id @default(uuid())
   title              String
   description        String
   date               DateTime
   venue              String
-  fees               Int?     @default(0)
+  fees               Int?              @default(0)
   clubId             String
-  coordinators       Member[]
+  coordinators       Coordinator[]
   registeredStudents RegisteredEvent[]
-  club               Club     @relation(fields: [clubId], references: [uId])
+  club               Club              @relation(fields: [clubId], references: [uId])
 }
 
 model Member {
-  studentId     String
-  clubId        String
-  coordinatorId String
-  user          User   @relation(fields: [studentId], references: [uId])
-  club          Club   @relation(fields: [clubId], references: [uId])
-  event         Event  @relation(fields: [coordinatorId], references: [uId])
+  studentId    String        @unique
+  clubId       String
+  coordinators Coordinator[]
+  user         User          @relation(fields: [studentId], references: [uId])
+  club         Club          @relation(fields: [clubId], references: [uId])
 
   @@id([studentId, clubId])
 }
 
-model RegisteredEvent{
-  userId String
+model Coordinator {
+  coordinatorId String
+  eventId       String
+  member        Member @relation(fields: [coordinatorId], references: [studentId])
+  event         Event  @relation(fields: [eventId], references: [uId])
+
+  @@id([coordinatorId, eventId])
+}
+
+model RegisteredEvent {
+  userId  String
   eventId String
-  user User @relation(fields: [userId],references: [uId])
-  event Event @relation(fields: [eventId],references: [uId])
-  @@id([userId,eventId])
+  user    User   @relation(fields: [userId], references: [uId])
+  event   Event  @relation(fields: [eventId], references: [uId])
+
+  @@id([userId, eventId])
 }
