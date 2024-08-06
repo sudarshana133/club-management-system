@@ -19,7 +19,7 @@ model User {
   clubName         String?           @unique
   eventId          String?
   role             UserType
-  members          Member[]
+  members          Member
   registeredEvents RegisteredEvent[]
   adminOf          Club?
 }
