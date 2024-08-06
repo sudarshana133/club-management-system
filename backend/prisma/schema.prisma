@@ -29,7 +29,7 @@ model Club {
   clubName String   @unique
   events   Event[]
   members  Member[]
-  admin    User     @relation(fields: [adminId], references: [uId])
+  admin    User     @relation(fields: [adminId], references: [uId], onDelete: Cascade)
   adminId  String   @unique
 }
 
@@ -43,15 +43,15 @@ model Event {
   clubId             String
   coordinators       Coordinator[]
   registeredStudents RegisteredEvent[]
-  club               Club              @relation(fields: [clubId], references: [uId])
+  club               Club              @relation(fields: [clubId], references: [uId], onDelete: Cascade)
 }
 
 model Member {
   studentId    String        @unique
   clubId       String
   coordinators Coordinator[]
-  user         User          @relation(fields: [studentId], references: [uId])
-  club         Club          @relation(fields: [clubId], references: [uId])
+  user         User          @relation(fields: [studentId], references: [uId], onDelete: Cascade)
+  club         Club          @relation(fields: [clubId], references: [uId], onDelete: Cascade)
 
   @@id([studentId, clubId])
 }
@@ -59,8 +59,8 @@ model Member {
 model Coordinator {
   coordinatorId String
   eventId       String
-  member        Member @relation(fields: [coordinatorId], references: [studentId])
-  event         Event  @relation(fields: [eventId], references: [uId])
+  member        Member @relation(fields: [coordinatorId], references: [studentId], onDelete: Cascade)
+  event         Event  @relation(fields: [eventId], references: [uId], onDelete: Cascade)
 
   @@id([coordinatorId, eventId])
 }
@@ -68,8 +68,8 @@ model Coordinator {
 model RegisteredEvent {
   userId  String
   eventId String
-  user    User   @relation(fields: [userId], references: [uId])
-  event   Event  @relation(fields: [eventId], references: [uId])
+  user    User   @relation(fields: [userId], references: [uId], onDelete: Cascade)
+  event   Event  @relation(fields: [eventId], references: [uId], onDelete: Cascade)
 
   @@id([userId, eventId])
 }
