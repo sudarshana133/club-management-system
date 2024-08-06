@@ -39,4 +39,29 @@ const deleteClub = async (req: customReq, res: Response) => {
         res.status(500).json({ msg: "Error" + error.message });
     }
 };
-export { addClub, deleteClub };
+const getClubs = async (req: Request, res: Response) => {
+    try {
+        const clubs = await prisma.club.findMany();
+        if (clubs.length > 0) {
+            return res.status(200).json({ msg: clubs });
+        }
+        res.status(404).json({ msg: "Clubs not found" });
+    } catch (error: any) {
+        res.status(500).json({ msg: "Error" + error.message });
+    }
+}
+const getClub = async(req: Request, res: Response) => {
+    const clubId = req.params.clubId;
+    try {
+        const club = await prisma.club.findFirst({
+            where:{
+                uId:clubId
+            }
+        })
+        if(!club) return res.status(404).json({ msg: "Club not found" });
+        res.status(200).json({ msg: club});
+    } catch (error:any) {
+        res.status(500).json({ msg: "Error" + error.message });
+    }
+};
+export { addClub, deleteClub, getClubs,getClub };
