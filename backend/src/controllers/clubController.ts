@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
-import { customReq } from "./middleware";
+import { CustomReq } from "./middleware";
 
 const prisma = new PrismaClient();
 
 // Add new club
-const addClub = async (req: customReq, res: Response) => {
+const addClub = async (req: CustomReq, res: Response) => {
     const { clubName } = req.body;
     const userId = req.userId;
     const role = req.role;
@@ -23,7 +23,7 @@ const addClub = async (req: customReq, res: Response) => {
         res.status(500).json({ msg: "Error" + error.message });
     }
 }
-const deleteClub = async (req: customReq, res: Response) => {
+const deleteClub = async (req: CustomReq, res: Response) => {
     const { clubName } = req.body;
     const userId = req.userId;
     const role = req.role;
