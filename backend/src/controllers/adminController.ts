@@ -4,16 +4,15 @@ const prisma = new PrismaClient();
 
 
 const selectCoordinators = async (req:Request,res:Response)=>{
-    const memberId:string[] = JSON.parse(req.body.ids);
+    const memberId:string[] = req.body.ids;
     const eventId = req.params.eventId;
-    const clubId = req.params.clubId;
     try{
         for(let i=0;i<memberId.length;i++){
-            const response = prisma.member.create({
+            console.log(memberId[i]);
+            const response = await prisma.coordinator.create({
                 data:{
-                    clubId,
-                    coordinatorId:eventId,
-                    studentId:memberId[i]
+                    coordinatorId:memberId[i],
+                    eventId
                 }
             })
         }
