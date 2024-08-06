@@ -1,32 +1,37 @@
-import {Request,Response,NextFunction} from "express"
+import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-
-export interface customReq extends Request{
-    userId?:String,
-    role?:UserType
+export interface CustomReq extends Request {
+    userId?: string;
+    role?: UserType;
 }
+
 export enum UserType {
     ADMIN = "ADMIN",
     STUDENT = "STUDENT"
 }
-const authMiddleware=(req:customReq,res:Response,next:NextFunction)=>{
 
+const authMiddleware = (req: CustomReq, res: Response, next: NextFunction) => {
     type Data = {
-        id:String,
-        email:String,
-        role:UserType
+        id: string;
+        email: string;
+        role: UserType;
+    };
+
+    const token = req.headers.authorization?.split(' ')[1];
+    if (!token) {
+        return res.status(403).json({ msg: "Token is required" });
     }
-    const token = req.headers.authorization||"";
-    const data = jwt.verify(token,process.env.JWT_SECRET as string) as Data;
-    if(!data){
-        return res.status(403).json({
-            msg:"not authorised"
-        })
+
+    try {
+        const data = jwt.verify(token, process.env.JWT_SECRET as string) as Data;
+        req.userId = data.id;
+        req.role = data.role;
+        next();
+    } catch (error) {
+        console.error("JWT verification error:", error);
+        return res.status(403).json({ msg: "Invalid token" });
     }
-    req.userId = data.id;
-    req.role = data.role;
-    next();
-}
+};
 
 export default authMiddleware;

@@ -3,7 +3,7 @@ import { registerForEventSchema, signinSchema, signUpSchema } from "../zod";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { customReq } from "./middleware";
+import { CustomReq } from "./middleware";
 
 const prisma = new PrismaClient();
 const signin = async (req: Request, res: Response) => {
@@ -34,7 +34,7 @@ const signin = async (req: Request, res: Response) => {
       process.env.JWT_SECRET as string
     );
 
-    res.status(200).json({ msg: "Success!", token });
+    res.status(200).json({ msg: "Success!", token: "Bearer " + token });
   } catch (error: any) {
     res.status(500).json({ msg: "Error: " + error.message });
   }
@@ -89,7 +89,7 @@ const signup = async (req: Request, res: Response) => {
   });
 };
 
-const eventRegistration = async (req: customReq, res: Response) => {
+const eventRegistration = async (req: CustomReq, res: Response) => {
   const { eventId } = req.body;
   const userId = (req.userId || "") as string;
   if (!eventId || !userId)
