@@ -1,17 +1,12 @@
-import Navbar from "../../components/admincomponents/Navbar"
-import Sidebar from "../../components/admincomponents/Sidebar"
+import AllClubs from "../../components/admincomponents/AllClubs";
 
-
-
-const Adminhome = () => {
+const AdminHome: React.FC = () => {
+  
   return (
-
-
-    <div>
-      <Sidebar/>
-      <Navbar/>
+    <div className="grid grid-cols-1 bg-slate-900 p-4 justify-items-center md:grid-cols-2 lg:grid-cols-3 h-screen">
+      <AllClubs/>
     </div>
-  )
-}
+  );
+};
 
-export default Adminhome
+export default AdminHome;
