@@ -1,8 +1,16 @@
+import Navbar from "../../components/admincomponents/Navbar"
+import Sidebar from "../../components/admincomponents/Sidebar"
+
 
 
 const Adminhome = () => {
   return (
-    <div>Adminhome</div>
+
+
+    <div>
+      <Sidebar/>
+      <Navbar/>
+    </div>
   )
 }
 
