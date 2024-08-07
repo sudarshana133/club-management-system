@@ -1,4 +1,4 @@
-import ClubCard from "../ui/clubCard";
+import ClubCard from "../studentComponents/clubCard";
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 

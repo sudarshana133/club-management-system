@@ -1,8 +1,8 @@
 import { Outlet } from 'react-router-dom';
-import Bottombar from '../../../components/admincomponents/Bottombar';
-import Sidebar from '../../../components/admincomponents/Sidebar';
+import Bottombar from '../../components/adminComponents/Bottombar';
+import Sidebar from '../../components/adminComponents/Sidebar';
 
-const Adminhome = () => {
+const AdminLayout = () => {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex flex-1">
@@ -22,4 +22,4 @@ const Adminhome = () => {
   );
 };
 
-export default Adminhome;
+export default AdminLayout;

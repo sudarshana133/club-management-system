@@ -1,5 +1,5 @@
 import React from "react";
-import { LayoutDashboardIcon, Group, Calendar } from "lucide-react"
+import { LayoutDashboardIcon, Calendar } from "lucide-react"
 type SidebarItem = {
     href: string;
     label: string;
@@ -8,17 +8,12 @@ type SidebarItem = {
 
 const sidebarItems: SidebarItem[] = [
     {
-        href: "/",
+        href: "/admin",
         label: "Dashboard",
         icon: LayoutDashboardIcon
     },
     {
-        href: "/clubs",
-        label: "Clubs",
-        icon: Group,
-    },
-    {
-        href: "/events",
+        href: "/admin/events",
         label: "Events",
         icon: Calendar
     }
