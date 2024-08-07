@@ -23,10 +23,10 @@ const AllClubs: React.FC = () => {
       console.log(response.data.msg);
     }
     getClubDetails();
-  })
+  },[])
 
   return (
-    <div className="p-4">
+    <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center ">
       {
         clubData.map((club)=>(
           <ClubCard clubName={club.clubName}></ClubCard>
