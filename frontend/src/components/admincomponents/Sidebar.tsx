@@ -1,0 +1,37 @@
+import { useNavigate } from 'react-router-dom';
+import sidebarItems from '../../../constants/sidebar';
+import { Button } from '../ui/button';
+
+const Sidebar: React.FC = () => {
+  const navigate = useNavigate();
+
+  return (
+    <div
+      id="drawer-navigation"
+      className="fixed top-0 left-0 z-40 w-60 h-screen p-4 overflow-y-auto bg-gray-800 border-r border-gray-700"
+      tabIndex={-1}
+      aria-labelledby="drawer-navigation-label"
+    >
+      <div className="py-4">
+        <ul className="space-y-2">
+          {sidebarItems.map((item, index) => (
+            <li key={index}>
+              <Button
+                onClick={() => navigate(item.href)}
+                variant="ghost"
+                className="flex items-center w-full text-white justify-start"
+              >
+                <item.icon className="w-6 h-6 mr-3" />
+                <span className="">
+                  {item.label}
+                </span>
+              </Button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default Sidebar;
