@@ -34,7 +34,7 @@ const signin = async (req: Request, res: Response) => {
       process.env.JWT_SECRET as string
     );
 
-    res.status(200).json({ msg: "Success!", token: "Bearer " + token });
+    res.status(200).json({ msg: "Success!", token: "Bearer " + token,role:user.role });
   } catch (error: any) {
     res.status(500).json({ msg: "Error: " + error.message });
   }

@@ -1,4 +1,4 @@
-import AllClubs from "../../../components/adminComponents/AllClubs";
+import AllClubs from "../../../components/admincomponents/AllClubs";
 
 const StudentHome: React.FC = () => {
   

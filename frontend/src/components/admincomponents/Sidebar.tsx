@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import sidebarItems from '../../../constants/sidebar';
+import sidebarItems from '../../constants/sidebar';
 import { Button } from '../ui/button';
 
 const Sidebar: React.FC = () => {
