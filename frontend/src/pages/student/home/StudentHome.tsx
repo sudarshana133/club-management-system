@@ -1,9 +1,11 @@
-import AllClubs from "../../../components/admincomponents/AllClubs";
+import AllClubs from "../../../components/studentComponents/AllClubs";
+import LatestEvents from "../../../components/studentComponents/LatestEvents";
 
 const StudentHome: React.FC = () => {
   
   return (
-    <div className="bg-slate-900 p-4 h-screen">
+    <div className="bg-slate-900 min-h-screen">
+      <LatestEvents/>
       <AllClubs/>
     </div>
   );
