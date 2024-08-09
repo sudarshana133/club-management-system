@@ -15,8 +15,9 @@ const Signin = () => {
             const response = await axios.post('http://localhost:8000/user/signin',{
                 email,
                 password
+            },{
+                withCredentials:true
             });
-            localStorage.setItem("token",response.data.token);
             if(response.data.role == "STUDENT"){
                 navigate('/student')
             }

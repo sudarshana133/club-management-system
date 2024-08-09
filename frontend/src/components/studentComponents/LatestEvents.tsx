@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
 type Event = {
   uId: string;
@@ -23,12 +24,13 @@ interface EventCardProps {
 
 const LatestEvents = () => {
   const [latestEvents, setLatestEvents] = useState<Event[]>([]);
+  const token = Cookies.get("token");
   const getLatestEvents = async () => {
     try {
       const res = await axios.get("http://localhost:8000/event/getallevents", {
         headers: {
           Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImM1ZjdlMDYwLTI3MzEtNDI2Ny05YjU4LTc3ZjcxOTc1YzhhNiIsImVtYWlsIjoiYWJjMkBnbWFpbC5jb20iLCJyb2xlIjoiQURNSU4iLCJpYXQiOjE3MjMxNDQxMzl9.zedDTB7ZWqE18GQvlCm1lZ6d8T-ra1cxehacFF4n6oU",
+            `Bearer ${token}`,
         },
       });
       setLatestEvents(res.data.msg);

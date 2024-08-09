@@ -33,8 +33,14 @@ const signin = async (req: Request, res: Response) => {
       { id: user.uId, email: user.email, role: user.role },
       process.env.JWT_SECRET as string
     );
-
-    res.status(200).json({ msg: "Success!", token: "Bearer " + token,role:user.role });
+    res.cookie("token", token, {
+      // httpOnly: true,
+      // secure: process.env.NODE_ENV === 'production',
+      sameSite: "strict",
+      maxAge: 3600 * 24 * 1000,
+    }).status(200).json({
+      msg: "Success!"
+    });
   } catch (error: any) {
     res.status(500).json({ msg: "Error: " + error.message });
   }
