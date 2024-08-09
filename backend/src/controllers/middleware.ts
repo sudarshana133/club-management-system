@@ -1,5 +1,8 @@
+import { Prisma, PrismaClient } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
+
+const prisma = new PrismaClient();
 
 export interface CustomReq extends Request {
     userId?: string;
@@ -10,13 +13,13 @@ export enum UserType {
     ADMIN = "ADMIN",
     STUDENT = "STUDENT"
 }
+type Data = {
+    id: string;
+    email: string;
+    role: UserType;
+};
 
 const authMiddleware = (req: CustomReq, res: Response, next: NextFunction) => {
-    type Data = {
-        id: string;
-        email: string;
-        role: UserType;
-    };
 
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
@@ -34,4 +37,48 @@ const authMiddleware = (req: CustomReq, res: Response, next: NextFunction) => {
     }
 };
 
-export default authMiddleware;
+const eventMiddleware = async (req:Request,res:Response,next:NextFunction)=>{
+    const {clubId} = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+    if(!token)return res.json({
+        msg:"token required"
+    })
+    const data = jwt.verify(token,process.env.JWT_SECRET as string) as Data;
+    const id = data.id;
+    try{
+        const user = await prisma.user.findFirst({
+            where:{
+                uId:id
+            }
+        })
+        if(!user){
+            return res.status(404).json({
+                msg:"user not found"
+            })
+        }
+        if(user.role == UserType.STUDENT)return res.status(403).json({msg:"you are not an admin"});
+        const admin = await prisma.club.findFirst({
+            where:{
+                uId:clubId
+            }
+        });
+        if(!admin){
+            return res.status(404).json({
+                msg:"no such club exists"
+            })
+        }
+        const adminId = admin.adminId;
+        if(adminId!=id){
+            return res.status(403).json({
+                msg:"not authorised"
+            })
+        }
+        next();
+    }catch(err){
+        return res.status(500).json({
+            msg:err
+        })
+    }
+}
+
+export {authMiddleware,eventMiddleware};
