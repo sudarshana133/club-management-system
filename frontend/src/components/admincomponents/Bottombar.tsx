@@ -12,7 +12,7 @@ const Bottombar = () => {
         <div
           key={index}
           onClick={() => navigate(item.href)}
-          className="text-white flex flex-col items-center text-sm"
+          className="text-white flex flex-col items-center text-sm hover:cursor-pointer"
         >
           <item.icon className="w-5 h-5" />
           <span>{item.label}</span>

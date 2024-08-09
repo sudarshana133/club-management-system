@@ -16,7 +16,7 @@ eventRouter.use(authMiddleware);
 eventRouter.post("/addEvent", adminMiddleware, addEvent);
 eventRouter.get("/getAllEvents", getAllEvents);
 eventRouter.get("/getEvent/:clubId/:eventId", getEventOfClub);
-eventRouter.get("/getEvent/:clubId", getSpecificEvent);
+eventRouter.get("/getEvent", getSpecificEvent);
 eventRouter.delete("/deleteEvent/:eventId", adminMiddleware, deleteEvent);
 eventRouter.put("/updateEvent/:eventId",adminMiddleware,updateEvent);
 eventRouter.get("/latestEvents",latestEvents);

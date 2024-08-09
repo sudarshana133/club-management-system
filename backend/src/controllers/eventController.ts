@@ -56,17 +56,18 @@ const getAllEvents = async (req: Request, res: Response) => {
     }
 }
 
-const getSpecificEvent = async (req: Request, res: Response) => {
-    const clubId = req.params.clubId;
+const getSpecificEvent = async (req: CustomReq, res: Response) => {
+
     try {
-        const response = await prisma.event.findMany({
+        const response = await prisma.club.findMany({
             where: {
-                clubId
+                adminId: req.userId,
+            },
+            include: {
+                events: true
             }
-        })
-        return res.status(200).json({
-            msg: response,
-        })
+        });
+        return res.status(200).json({msg: response})
     } catch (err) {
         return res.status(500).json({
             msg: err
@@ -93,76 +94,76 @@ const getEventOfClub = async (req: CustomReq, res: Response) => {
         res.status(500).json({ msg: "error" + error.message });
     }
 }
-const deleteEvent = async(req:CustomReq,res:Response) =>{
+const deleteEvent = async (req: CustomReq, res: Response) => {
     const eventId = req.params.eventId;
-    if(req.role != UserType.ADMIN) return res.status(403).json({msg:"You are not admin"});
-    
+    if (req.role != UserType.ADMIN) return res.status(403).json({ msg: "You are not admin" });
+
     try {
         const event = await prisma.event.findFirst({
-            where:{
-                uId:eventId,
+            where: {
+                uId: eventId,
             }
         })
-        if(!event) return res.status(404).json({msg:"Event not found"});
+        if (!event) return res.status(404).json({ msg: "Event not found" });
         await prisma.event.delete({
-            where:{
-                uId:eventId,
+            where: {
+                uId: eventId,
             }
         });
-        res.status(200).json({msg:"Event deleted successfully"});
-    } catch (error:any) {
-        res.status(500).json({msg:"error"+error.message})
+        res.status(200).json({ msg: "Event deleted successfully" });
+    } catch (error: any) {
+        res.status(500).json({ msg: "error" + error.message })
     }
 }
 
-const updateEvent = async (req:CustomReq,res:Response)=>{
+const updateEvent = async (req: CustomReq, res: Response) => {
     const eventId = req.params.eventId as string
     const { title, description, date, venue, fees } = req.body;
-    try{
+    try {
         const check = await prisma.event.findFirst({
-            where:{
-                uId:eventId
+            where: {
+                uId: eventId
             }
         });
-        if(!check){
+        if (!check) {
             return res.status(404).json({
-                msg:"no such event"
+                msg: "no such event"
             })
         }
         const response = await prisma.event.update({
-            where:{
-                uId:eventId
+            where: {
+                uId: eventId
             },
-            data:{
-                title:title||undefined,
-                description:description||undefined,
-                date:date?new Date(date):undefined,
-                venue:venue||undefined,
-                fees:fees||undefined
+            data: {
+                title: title || undefined,
+                description: description || undefined,
+                date: date ? new Date(date) : undefined,
+                venue: venue || undefined,
+                fees: fees || undefined
             }
         })
         return res.status(200).json({
-            msg:"event updated"
+            msg: "event updated"
         })
-    }catch(err){
+    } catch (err) {
         return res.status(500).json({
-            msg:err
+            msg: err
         })
     }
 }
-const latestEvents = async (req:Request,res:Response)=>{
+const latestEvents = async (req: Request, res: Response) => {
     console.log(new Date());
     const response = await prisma.event.findMany(
         {
-            where:{
-                date:{
-                    gt:new Date()
+            where: {
+                date: {
+                    gt: new Date()
                 }
             }
         }
     );
     return res.status(200).json({
-        msg:response
+        msg: response
     });
 }
-export { addEvent, getAllEvents, getSpecificEvent, getEventOfClub,deleteEvent,updateEvent,latestEvents };
+export { addEvent, getAllEvents, getSpecificEvent, getEventOfClub, deleteEvent, updateEvent, latestEvents };

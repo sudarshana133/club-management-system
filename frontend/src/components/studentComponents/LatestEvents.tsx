@@ -27,7 +27,7 @@ const LatestEvents = () => {
   const token = Cookies.get("token");
   const getLatestEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/event/getallevents", {
+      const res = await axios.get("http://localhost:8000/event/latestevents", {
         headers: {
           Authorization:
             `Bearer ${token}`,

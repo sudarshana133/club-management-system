@@ -14,7 +14,7 @@ const StudentHome = lazy(() => import("./pages/student/home/StudentHome"));
 const StudentLayout = lazy(() => import("./pages/student/StudentLayout"));
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
 const StudentEvents = lazy(() => import("./pages/student/events/Events"));
-
+const AddEvents = lazy(()=> import("./pages/admin/addEvents/AddEvents"));
 const App = () => {
   return (
     <Router>
@@ -29,6 +29,7 @@ const App = () => {
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
             <Route path="events" element={<AdminEvents />} />
+            <Route path="addevent" element={<AddEvents />} />
           </Route>
 
           {/* Student routes */}
