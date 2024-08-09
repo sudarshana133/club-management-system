@@ -93,4 +93,25 @@ const getEventOfClub = async (req: CustomReq, res: Response) => {
         res.status(500).json({ msg: "error" + error.message });
     }
 }
-export { addEvent, getAllEvents, getSpecificEvent, getEventOfClub };
+const deleteEvent = async(req:CustomReq,res:Response) =>{
+    const eventId = req.params.eventId;
+    if(req.role != UserType.ADMIN) return res.status(403).json({msg:"You are not admin"});
+    
+    try {
+        const event = await prisma.event.findFirst({
+            where:{
+                uId:eventId,
+            }
+        })
+        if(!event) return res.status(404).json({msg:"Event not found"});
+        await prisma.event.delete({
+            where:{
+                uId:eventId,
+            }
+        });
+        res.status(200).json({msg:"Event deleted successfully"});
+    } catch (error:any) {
+        res.status(500).json({msg:"error"+error.message})
+    }
+}
+export { addEvent, getAllEvents, getSpecificEvent, getEventOfClub,deleteEvent };
