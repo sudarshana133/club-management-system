@@ -37,8 +37,11 @@ const authMiddleware = (req: CustomReq, res: Response, next: NextFunction) => {
     }
 };
 
-const eventMiddleware = async (req:Request,res:Response,next:NextFunction)=>{
+const adminMiddleware = async (req:Request,res:Response,next:NextFunction)=>{
     const {clubId} = req.body;
+    if(!clubId){
+        return res.status(404).json("clubid missing");
+    }
     const token = req.headers.authorization?.split(" ")[1];
     if(!token)return res.json({
         msg:"token required"
@@ -81,4 +84,4 @@ const eventMiddleware = async (req:Request,res:Response,next:NextFunction)=>{
     }
 }
 
-export {authMiddleware,eventMiddleware};
+export {authMiddleware,adminMiddleware};

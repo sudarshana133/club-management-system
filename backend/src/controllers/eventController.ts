@@ -114,4 +114,55 @@ const deleteEvent = async(req:CustomReq,res:Response) =>{
         res.status(500).json({msg:"error"+error.message})
     }
 }
-export { addEvent, getAllEvents, getSpecificEvent, getEventOfClub,deleteEvent };
+
+const updateEvent = async (req:CustomReq,res:Response)=>{
+    const eventId = req.params.eventId as string
+    const { title, description, date, venue, fees } = req.body;
+    try{
+        const check = await prisma.event.findFirst({
+            where:{
+                uId:eventId
+            }
+        });
+        if(!check){
+            return res.status(404).json({
+                msg:"no such event"
+            })
+        }
+        const response = await prisma.event.update({
+            where:{
+                uId:eventId
+            },
+            data:{
+                title:title||undefined,
+                description:description||undefined,
+                date:date?new Date(date):undefined,
+                venue:venue||undefined,
+                fees:fees||undefined
+            }
+        })
+        return res.status(200).json({
+            msg:"event updated"
+        })
+    }catch(err){
+        return res.status(500).json({
+            msg:err
+        })
+    }
+}
+const latestEvents = async (req:Request,res:Response)=>{
+    console.log(new Date());
+    const response = await prisma.event.findMany(
+        {
+            where:{
+                date:{
+                    gt:new Date()
+                }
+            }
+        }
+    );
+    return res.status(200).json({
+        msg:response
+    });
+}
+export { addEvent, getAllEvents, getSpecificEvent, getEventOfClub,deleteEvent,updateEvent,latestEvents };
