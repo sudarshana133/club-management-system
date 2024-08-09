@@ -1,6 +1,6 @@
 import express from "express";
 import { addClub,deleteClub, getClub, getClubs } from "../controllers/clubController";
-import authMiddleware from "../controllers/middleware";
+import { authMiddleware } from "../controllers/middleware";
 
 const clubRouter = express.Router();
 clubRouter.use(authMiddleware);
