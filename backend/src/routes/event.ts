@@ -1,5 +1,5 @@
 import express from "express";
-import { addEvent, getAllEvents, getEventOfClub, getSpecificEvent } from "../controllers/eventController";
+import { addEvent, getAllEvents, getEventOfClub, getSpecificEvent,deleteEvent } from "../controllers/eventController";
 import authMiddleware from "../controllers/middleware";
 
 const eventRouter = express.Router();
@@ -9,4 +9,5 @@ eventRouter.post('/addEvent',addEvent);
 eventRouter.get('/getAllEvents',getAllEvents);
 eventRouter.get("/getEvent/:clubId/:eventId",getEventOfClub);
 eventRouter.get('/getEvent/:clubId',getSpecificEvent);
+eventRouter.delete("/deleteEvent/:eventId",deleteEvent);
 export {eventRouter};
