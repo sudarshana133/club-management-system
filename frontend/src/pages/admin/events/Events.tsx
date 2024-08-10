@@ -5,6 +5,7 @@ import { Edit, Trash, Loader } from "lucide-react";
 import DeleteAlert from "../../../components/adminComponents/DeleteAlert";
 import UpdateModal from "../../../components/adminComponents/UpdateEvent";
 import { Button } from "../../../components/ui/button";
+import { useToast } from "../../../components/ui/use-toast";
 
 type Events = {
   uId: string;
@@ -23,6 +24,7 @@ const Events = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Events | null>(null);
+  const { toast } = useToast();
   const token = Cookies.get("token");
 
   const getClubEvents = async () => {
@@ -56,8 +58,17 @@ const Events = () => {
             event.uId === selectedEvent.uId ? updatedEvent : event
           )
         );
+        toast({
+          title:"Updated event",
+          description:"Successfully updated event",
+        })
       } catch (error) {
         console.error("Error updating event:", error);
+        toast({
+          title:"Error!",
+          description:"Error while updating event",
+          variant:"destructive",
+        })
       } finally {
         setLoadingId(null);
         setUpdateModalOpen(false);
@@ -82,8 +93,17 @@ const Events = () => {
         });
 
         setEvents(events.filter((event) => event.uId !== deleteId));
+        toast({
+          title:"Delete",
+          description:"Deleted event successfully",
+        })
       } catch (error) {
         console.error("Error deleting event:", error);
+        toast({
+          title:"Error!",
+          description:"Error while deleting event",
+          variant:"destructive"
+        })
       } finally {
         setLoadingId(null);
         setAlertOpen(false);

@@ -35,7 +35,6 @@ const selectCoordinators = async (req: CustomReq, res: Response) => {
     if (req.role === "STUDENT") return res.status(403).json({ msg: "You are not admin" });
     try {
         for (let i = 0; i < memberId.length; i++) {
-            console.log(memberId[i]);
             const response = await prisma.coordinator.create({
                 data: {
                     coordinatorId: memberId[i],

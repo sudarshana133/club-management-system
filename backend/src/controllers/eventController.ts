@@ -152,7 +152,6 @@ const updateEvent = async (req: CustomReq, res: Response) => {
     }
 }
 const latestEvents = async (req: Request, res: Response) => {
-    console.log(new Date());
     const response = await prisma.event.findMany(
         {
             where: {

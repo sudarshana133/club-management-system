@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { registerForEventSchema, signinSchema, signUpSchema } from "../zod";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, UserType } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { CustomReq } from "./middleware";
@@ -123,4 +123,19 @@ const eventRegistration = async (req: CustomReq, res: Response) => {
     res.status(500).json({ msg: "Error" + error.message });
   }
 };
-export { signin, signup, eventRegistration };
+const getClubId = async (req: CustomReq, res: Response) => {
+  const adminId = req.userId;
+  if (req.role !== UserType.ADMIN) return res.status(403).json({ msg: "You are not admin" });
+  try {
+    const response = await prisma.club.findFirst({
+      where: {
+        adminId
+      }
+    });
+    const cludId = response?.uId;
+    res.status(200).json({ msg: cludId });
+  } catch (error: any) {
+    res.status(500).json({ msg: "error" + error.message });
+  }
+}
+export { signin, signup, eventRegistration, getClubId };
