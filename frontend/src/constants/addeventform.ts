@@ -1,4 +1,4 @@
-type FormFieldName = "title" | "description" | "venue" | "date" | "clubId";
+type FormFieldName = "title" | "description" | "venue" | "date" | "clubId" | "fee";
 
 interface FormElement {
   name: FormFieldName;
@@ -30,5 +30,11 @@ export const formElements: FormElement[] = [
         type: "date",
         labelName: "Date",
         placeholder: "Date",
+    },
+    {
+        name: "fee",
+        type: "number",
+        labelName: "fee",
+        placeholder: "fee",
     }
 ]

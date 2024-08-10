@@ -32,10 +32,12 @@ export default function AddEvents() {
       venue: "",
       date: "",
       clubId: "",
+      fee:"0"
     },
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
+    let fee = Number(values.fee);
     let clubId = "";
     try {
       clubId = await getClubId(token);
@@ -57,7 +59,11 @@ export default function AddEvents() {
       await axios.post(
         "http://localhost:8000/event/addEvent",
         {
-          ...values,
+          title:values.title,
+          description:values.description,
+          venue:values.venue,
+          fees:fee,
+          date:values.date,
           clubId,
         },
         {
