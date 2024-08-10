@@ -2,8 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Edit, Trash, Loader } from "lucide-react";
-import DeleteAlert from "../../../components/adminComponents/DeleteAlert";
-import UpdateModal from "../../../components/adminComponents/UpdateEvent";
+import DeleteAlert from "../../../components/admincomponents/DeleteAlert";
+import UpdateModal from "../../../components/admincomponents/UpdateEvent";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
 
