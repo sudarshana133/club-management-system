@@ -5,6 +5,6 @@ const adminRouter = express.Router();
 adminRouter.use(authMiddleware);
 adminRouter.get("/viewMembers",viewMembers);
 adminRouter.post('/addCoordinator/:eventId',selectCoordinators)
-adminRouter.post("/addmembers/:clubId", addMembers);
-adminRouter.delete("/deleteMembers/:clubId",removeMember);
+adminRouter.post("/addmembers", addMembers);
+adminRouter.put("/deleteMembers",removeMember);
 export{adminRouter}

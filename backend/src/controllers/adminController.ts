@@ -37,7 +37,23 @@ const viewMembers = async(req:CustomReq,res:Response)=>{
 
 const addMembers = async (req: CustomReq, res: Response) => {
     const uIds: string[] = req.body.uIds;
-    const clubId = req.params.clubId;
+    const adminId = req.userId;
+    let club;
+    try{
+        club = await prisma.club.findFirst({
+            where:{
+                adminId
+            }
+        })
+        if(!club){
+            return res.json({
+                msg:"not admin"
+            })
+        }
+    }catch(err){
+        return res.json({msg:err});
+    }
+    const clubId = club.uId
     if (uIds.length === 0) return res.status(403).json({ msg: "User not present to add as members" });
     if (req.role === "STUDENT") return res.status(403).json({ msg: "You are not admin" });
     try {
@@ -85,7 +101,23 @@ const selectCoordinators = async (req: CustomReq, res: Response) => {
 // remove members from clubs
 const removeMember = async (req: CustomReq, res: Response) => {
     const uIds: string[] = req.body.uIds;
-    const clubId = req.params.clubId;
+    const adminId = req.userId;
+    let club;
+    try{
+        club = await prisma.club.findFirst({
+            where:{
+                adminId
+            }
+        })
+        if(!club){
+            return res.json({
+                msg:"not admin"
+            })
+        }
+    }catch(err){
+        return res.json({msg:err});
+    }
+    const clubId = club.uId
     if(req.role === "STUDENT") return res.status(403).json({msg:"You are not admin"});
     if(uIds.length === 0) return res.status(403).json({msg:"There are not members to remove"});
     try {
