@@ -14,7 +14,7 @@ const AdminLayout = () => {
         <div className="fixed flex justify-center bottom-0 w-full md:hidden">
           <Bottombar />
         </div>
-        <main className="flex-1 bg-slate-600 p-4">
+        <main className="flex-1 bg-slate-600">
           <Outlet />
         </main>
       </div>

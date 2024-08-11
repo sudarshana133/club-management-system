@@ -6,6 +6,7 @@ import DeleteAlert from "../../../components/admincomponents/DeleteAlert";
 import UpdateModal from "../../../components/admincomponents/UpdateEvent";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
+import { useNavigate } from "react-router-dom";
 
 type Events = {
   uId: string;
@@ -26,6 +27,7 @@ const Events = () => {
   const [selectedEvent, setSelectedEvent] = useState<Events | null>(null);
   const { toast } = useToast();
   const token = Cookies.get("token");
+  const navigate = useNavigate();
 
   const getClubEvents = async () => {
     try {
@@ -42,7 +44,7 @@ const Events = () => {
 
   const handleUpdate = async (updatedEvent: Events) => {
     if (selectedEvent) {
-      setLoadingId(selectedEvent.uId); // Start loading state
+      setLoadingId(selectedEvent.uId);
       try {
         await axios.put(
           `http://localhost:8000/event/updateEvent/${selectedEvent.uId}`,
@@ -59,16 +61,16 @@ const Events = () => {
           )
         );
         toast({
-          title:"Updated event",
-          description:"Successfully updated event",
-        })
+          title: "Updated event",
+          description: "Successfully updated event",
+        });
       } catch (error) {
         console.error("Error updating event:", error);
         toast({
-          title:"Error!",
-          description:"Error while updating event",
-          variant:"destructive",
-        })
+          title: "Error!",
+          description: "Error while updating event",
+          variant: "destructive",
+        });
       } finally {
         setLoadingId(null);
         setUpdateModalOpen(false);
@@ -94,16 +96,16 @@ const Events = () => {
 
         setEvents(events.filter((event) => event.uId !== deleteId));
         toast({
-          title:"Delete",
-          description:"Deleted event successfully",
-        })
+          title: "Delete",
+          description: "Deleted event successfully",
+        });
       } catch (error) {
         console.error("Error deleting event:", error);
         toast({
-          title:"Error!",
-          description:"Error while deleting event",
-          variant:"destructive"
-        })
+          title: "Error!",
+          description: "Error while deleting event",
+          variant: "destructive",
+        });
       } finally {
         setLoadingId(null);
         setAlertOpen(false);
@@ -112,37 +114,31 @@ const Events = () => {
     }
   };
 
+  const expandClubDetails = (event: Events) => {
+    navigate("/admin/event", { state: { event } });
+  };
+
   useEffect(() => {
     getClubEvents();
   }, []);
 
   return (
     <div className="p-6 bg-gray-900 text-white mb-10 md:mb-0">
-      <h1 className="text-3xl font-extrabold mb-6 text-teal-400">Events</h1>
-      <div className="space-y-4">
+      <div className="space-y-6">
         {events.map((event) => (
-          <div key={event.uId} className="border-b border-gray-700 pb-4">
-            <h2 className="text-2xl font-semibold text-blue-300 capitalize">
-              {event.title}
-            </h2>
-            <p className="text-gray-400 capitalize">{event.description}</p>
-            <div className="flex justify-between items-center mt-2 text-gray-500">
-              <span className="flex-1 text-left text-gray-400 capitalize">
-                {event.venue}
-              </span>
-              <span className="flex-1 text-center">
-                {new Date(event.date).toLocaleDateString()}
-              </span>
-              <span className="flex-1 text-right">
-                <span
-                  className={event.fees ? "text-green-400" : "text-red-400"}
-                >
-                  {event.fees ? `₹${event.fees}` : "Free"}
-                </span>
-              </span>
-              <div className="ml-4 flex space-x-2">
+          <div
+            key={event.uId}
+            onClick={() => expandClubDetails(event)}
+            className="border border-gray-700 p-6 rounded-lg cursor-pointer hover:shadow-lg hover:border-teal-400 transition-shadow duration-200 ease-in-out bg-gray-800"
+          >
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold text-blue-300 capitalize">
+                {event.title}
+              </h2>
+              <div className="flex space-x-2">
                 <Button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setSelectedEvent(event);
                     setUpdateModalOpen(true);
                   }}
@@ -156,7 +152,8 @@ const Events = () => {
                   )}
                 </Button>
                 <Button
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     setDeleteId(event.uId);
                     setAlertOpen(true);
                   }}
@@ -170,6 +167,22 @@ const Events = () => {
                   )}
                 </Button>
               </div>
+            </div>
+            <p className="text-gray-400 mb-4">{event.description}</p>
+            <div className="flex justify-between items-center text-gray-500">
+              <span className="flex-1 text-left capitalize">
+                {event.venue}
+              </span>
+              <span className="flex-1 text-center">
+                {new Date(event.date).toLocaleDateString()}
+              </span>
+              <span className="flex-1 text-right">
+                <span
+                  className={event.fees ? "text-green-400" : "text-red-400"}
+                >
+                  {event.fees ? `₹${event.fees}` : "Free"}
+                </span>
+              </span>
             </div>
           </div>
         ))}
