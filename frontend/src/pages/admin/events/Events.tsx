@@ -6,7 +6,7 @@ import DeleteAlert from "../../../components/admincomponents/DeleteAlert";
 import UpdateModal from "../../../components/admincomponents/UpdateEvent";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
-import { Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 type Events = {
   uId: string;
