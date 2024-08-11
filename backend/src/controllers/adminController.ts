@@ -4,6 +4,37 @@ import { CustomReq } from "./middleware";
 
 const prisma = new PrismaClient();
 
+const viewMembers = async(req:CustomReq,res:Response)=>{
+    const adminId = req.userId;
+    try{
+        const response = await prisma.club.findMany({
+            where:{
+                adminId
+            },
+            include:{
+                members:true
+            }
+        });
+        let allMembers:any = [];
+        for(let i=0;i<response.length;i++){
+            allMembers = response[i].members
+        }
+        const memberDetails = await Promise.all(
+            allMembers.map(async(member:any)=>{
+                return prisma.user.findFirst({
+                    where:{
+                        uId:member.studentId
+                    }
+                })
+            })
+        )
+        console.log(memberDetails);
+        return res.status(200).json({msg:memberDetails});
+    }catch(err){
+        return res.status(500).json({msg:"internal server error new"});
+    }
+}
+
 const addMembers = async (req: CustomReq, res: Response) => {
     const uIds: string[] = req.body.uIds;
     const clubId = req.params.clubId;
@@ -82,4 +113,4 @@ const removeMember = async (req: CustomReq, res: Response) => {
         res.status(500).json({ msg: "error" + error.message });
     }
 }
-export { addMembers, selectCoordinators, removeMember }
+export { addMembers, selectCoordinators, removeMember, viewMembers }

@@ -8,7 +8,7 @@ const Sidebar: React.FC = () => {
   return (
     <div
       id="drawer-navigation"
-      className="fixed top-0 left-0 z-40 w-64 h-screen p-6 bg-gray-900 border-r border-gray-700"
+      className="fixed top-0 left-0 z-40 w-60 h-screen p-6 bg-gray-900 border-r border-gray-700"
       tabIndex={-1}
       aria-labelledby="drawer-navigation-label"
     >
