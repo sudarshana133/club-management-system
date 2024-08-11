@@ -1,71 +1,32 @@
-// import axios from "axios"
-// import Cookies from "js-cookie";
-// import { useEffect, useState } from "react";
-
-// const token = Cookies.get("token");;
-// type Member = {
-//     email:string
-// }
-// const Members = ()=>{
-//     const [members,setMembers] = useState<Member[]>([]);
-//     const getMemberDetails = async ()=>{
-//         const response = await axios.get("http://localhost:8000/admin/viewMembers",{
-//             headers:{
-//                 Authorization:"Bearer "+token
-//             }
-//         });
-//         console.log(response.data.msg);
-//         setMembers(response.data.msg);
-//     }
-//     useEffect(
-//         ()=>{
-//             getMemberDetails();
-//         },[]
-//     )
-//     return (
-        
-//         <div>
-//             {
-//                 members.map((member)=>(
-//                     <div>
-//                         email:{member.email}
-//                     </div>
-//                 ))
-//             }
-//         </div>
-//     )
-// }
-
-// export default Members;
-
+import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { useEffect, useState } from "react";
-import { Loader } from "lucide-react"; // Alternative icon for loading
+import { Navigate } from "react-router-dom";
 
 const token = Cookies.get("token");
 
 type Member = {
+  uId: string;
   email: string;
 };
 
 const Members = () => {
   const [members, setMembers] = useState<Member[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [deleteIds, setDeleteIds] = useState<String[]>([]);
 
   const getMemberDetails = async () => {
     try {
-      const response = await axios.get("http://localhost:8000/admin/viewMembers", {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
+      const response = await axios.get(
+        "http://localhost:8000/admin/viewMembers",
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
       setMembers(response.data.msg);
     } catch (err) {
-      setError("Failed to fetch member details.");
-    } finally {
-      setLoading(false);
+      console.log(err);
     }
   };
 
@@ -73,21 +34,28 @@ const Members = () => {
     getMemberDetails();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="spinner" />
-      </div>
-    );
-  }
+  const addMemberToDelete = (id: string) => {
+    setDeleteIds([...deleteIds, id]);
+  };
 
-  if (error) {
-    return (
-      <div className="flex items-center justify-center h-screen text-red-400">
-        <p>{error}</p>
-      </div>
-    );
-  }
+  const deleteMembers = async () => {
+    try {
+      const response = await axios.put(
+        "http://localhost:8000/admin/deleteMembers",
+        {
+          uIds: deleteIds,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      );
+      window.location.reload();
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="p-6 bg-gray-900 text-white min-h-screen">
@@ -96,14 +64,34 @@ const Members = () => {
         {members.length > 0 ? (
           <ul className="space-y-4">
             {members.map((member, index) => (
-              <li key={index} className="flex items-center p-4 bg-gray-700 rounded-lg">
-                <span className="text-lg font-medium">{member.email}</span>
-              </li>
+              <div
+                key={index}
+                className="flex items-center justify-between p-4 bg-gray-700 rounded-lg"
+              >
+                <li>
+                  <span className="text-lg font-medium">{member.email}</span>
+                </li>
+                <input
+                  type="checkbox"
+                  onChange={() => {
+                    addMemberToDelete(member.uId);
+                  }}
+                  className="ml-4 w-4 h-4"
+                />
+              </div>
             ))}
           </ul>
         ) : (
           <p className="text-gray-400">No members found.</p>
         )}
+        <div className="mt-4">
+          <button
+            onClick={deleteMembers}
+            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+          >
+            Delete Members
+          </button>
+        </div>
       </div>
     </div>
   );
