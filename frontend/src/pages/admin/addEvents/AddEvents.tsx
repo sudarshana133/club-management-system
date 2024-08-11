@@ -32,7 +32,7 @@ export default function AddEvents() {
       venue: "",
       date: "",
       clubId: "",
-      fee:"0"
+      fee: "0",
     },
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -45,9 +45,9 @@ export default function AddEvents() {
       setIsLoading(false);
       toast({
         title: "Error!",
-        description:"Some error occurred",
-        variant:"destructive",
-      })
+        description: "Some error occurred",
+        variant: "destructive",
+      });
     }
 
     if (!clubId) {
@@ -59,11 +59,11 @@ export default function AddEvents() {
       await axios.post(
         "http://localhost:8000/event/addEvent",
         {
-          title:values.title,
-          description:values.description,
-          venue:values.venue,
-          fees:fee,
-          date:values.date,
+          title: values.title,
+          description: values.description,
+          venue: values.venue,
+          fees: fee,
+          date: values.date,
           clubId,
         },
         {
@@ -88,42 +88,44 @@ export default function AddEvents() {
   };
 
   return (
-    <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 p-6 bg-gray-800 rounded-lg shadow-md"
-      >
-        {formElements.map((formElement) => (
-          <FormField
-            control={form.control}
-            name={formElement.name}
-            key={formElement.labelName}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-lg font-medium text-gray-200">
-                  {formElement.labelName}
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder={formElement.placeholder}
-                    {...field}
-                    type={formElement.type}
-                    className="mt-1 p-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-200"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        ))}
-        <Button
-          type="submit"
-          disabled={isLoading}
-          className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+    <div className="m-10">
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-6 p-6 bg-gray-800 rounded-lg shadow-md"
         >
-          Submit
-        </Button>
-      </form>
-    </Form>
+          {formElements.map((formElement) => (
+            <FormField
+              control={form.control}
+              name={formElement.name}
+              key={formElement.labelName}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-medium text-gray-200">
+                    {formElement.labelName}
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder={formElement.placeholder}
+                      {...field}
+                      type={formElement.type}
+                      className="mt-1 p-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-200"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          ))}
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-2 px-4 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+          >
+            Submit
+          </Button>
+        </form>
+      </Form>
+    </div>
   );
 }

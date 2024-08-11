@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import AboutEvent from "./pages/admin/events/AboutEvent";
 
 const Signin = lazy(() => import("./pages/signin/Signin"));
 const SignUp = lazy(() => import("./pages/signup/Signup"));
@@ -30,6 +31,7 @@ const App = () => {
             <Route index element={<AdminDashboard />} />
             <Route path="events" element={<AdminEvents />} />
             <Route path="addevent" element={<AddEvents />} />
+            <Route path="event" element={<AboutEvent/>}/>
           </Route>
 
           {/* Student routes */}
