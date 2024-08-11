@@ -2,11 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Edit, Trash, Loader, Sparkles } from "lucide-react";
-import DeleteAlert from "../../../components/adminComponents/DeleteAlert";
-import UpdateModal from "../../../components/adminComponents/UpdateEvent";
+import DeleteAlert from "../../../components/admincomponents/DeleteAlert";
+import UpdateModal from "../../../components/admincomponents/UpdateEvent";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
+import AIGenerator from "../../../components/admincomponents/AIGenerator";
+
 
 type Events = {
   uId: string;
@@ -18,6 +20,7 @@ type Events = {
   clubId: string;
 };
 
+
 const Events = () => {
   const [events, setEvents] = useState<Events[]>([]);
   const [loadingId, setLoadingId] = useState<string | null>(null);
@@ -25,6 +28,7 @@ const Events = () => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Events | null>(null);
+  const [openAIModal, setOpenAIModal] = useState<boolean>(false);
   const { toast } = useToast();
   const token = Cookies.get("token");
   const navigate = useNavigate();
@@ -117,9 +121,7 @@ const Events = () => {
   const expandClubDetails = (event: Events) => {
     navigate("/admin/event", { state: { event } });
   };
-  const handleAI = async()=>{
-    
-  }
+
   useEffect(() => {
     getClubEvents();
   }, []);
@@ -138,7 +140,11 @@ const Events = () => {
                 {event.title}
               </h2>
               <div className="flex space-x-2">
-                <Button className="relative bg-gradient-to-tr ai" onClick={handleAI}>
+                <Button className="relative bg-gray-400" onClick={(e) => {
+                  e.stopPropagation();
+                  setOpenAIModal(true);
+                  setSelectedEvent(event);
+                }}>
                   <Sparkles />
                 </Button>
                 <Button
@@ -201,6 +207,13 @@ const Events = () => {
           onClose={() => setUpdateModalOpen(false)}
           event={selectedEvent}
           onUpdate={handleUpdate}
+        />
+      )}
+      {openAIModal && (
+        <AIGenerator
+          open={openAIModal}
+          onClose={() => setOpenAIModal(false)}
+          event={selectedEvent!}
         />
       )}
     </div>
