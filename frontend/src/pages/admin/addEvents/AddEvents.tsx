@@ -24,6 +24,7 @@ export default function AddEvents() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const token = Cookies.get("token") as string;
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -37,7 +38,7 @@ export default function AddEvents() {
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
-    let fee = Number(values.fee);
+    const fee = Number(values.fee);
     let clubId = "";
     try {
       clubId = await getClubId(token);

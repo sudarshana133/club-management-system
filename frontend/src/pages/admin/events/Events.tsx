@@ -2,12 +2,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { Edit, Trash, Loader, Sparkles } from "lucide-react";
-import DeleteAlert from "../../../components/admincomponents/DeleteAlert";
-import UpdateModal from "../../../components/admincomponents/UpdateEvent";
+import DeleteAlert from "../../../components/adminComponents/DeleteAlert";
+import UpdateModal from "../../../components/adminComponents/UpdateEvent";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
-import AIGenerator from "../../../components/admincomponents/AIGenerator";
+import AIGenerator from "../../../components/adminComponents/AIGenerator";
 
 
 type Events = {
@@ -140,7 +140,8 @@ const Events = () => {
                 {event.title}
               </h2>
               <div className="flex space-x-2">
-                <Button className="relative bg-gray-400" onClick={(e) => {
+                <Button className="text-grey-400 hover:text-blue-600 p-2 rounded flex items-center"
+                onClick={(e) => {
                   e.stopPropagation();
                   setOpenAIModal(true);
                   setSelectedEvent(event);
@@ -209,7 +210,7 @@ const Events = () => {
           onUpdate={handleUpdate}
         />
       )}
-      {openAIModal && (
+      {selectedEvent && (
         <AIGenerator
           open={openAIModal}
           onClose={() => setOpenAIModal(false)}

@@ -12,7 +12,7 @@ type Member = {
 
 const Members = () => {
   const [members, setMembers] = useState<Member[]>([]);
-  const [deleteIds, setDeleteIds] = useState<String[]>([]);
+  const [deleteIds, setDeleteIds] = useState<string[]>([]);
 
   const getMemberDetails = async () => {
     try {
@@ -51,7 +51,7 @@ const Members = () => {
           },
         }
       );
-      window.location.reload();
+      setMembers(members.filter(member=>!deleteIds.includes(member.uId)));
     } catch (err) {
       console.log(err);
     }

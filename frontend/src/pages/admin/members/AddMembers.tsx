@@ -12,7 +12,7 @@ type Member = {
 
 const AddMembers = () => {
   const [members, setMembers] = useState<Member[]>([]);
-  const [deleteIds, setDeleteIds] = useState<String[]>([]);
+  const [deleteIds, setDeleteIds] = useState<string[]>([]);
 
   const getMemberDetails = async () => {
     try {

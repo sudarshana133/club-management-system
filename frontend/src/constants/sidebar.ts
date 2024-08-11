@@ -29,7 +29,7 @@ const sidebarItems: SidebarItem[] = [
     },
     {
         href:"/admin/addMembers",
-        label:"addMembers",
+        label:"Add Members",
         icon: PlusCircleIcon
     }
 ]
