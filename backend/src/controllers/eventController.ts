@@ -77,7 +77,6 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
 const getEventOfClub = async (req: CustomReq, res: Response) => {
     const clubId = req.params.clubId;
     const eventId = req.params.eventId;
-    if (req.role != UserType.ADMIN) return res.status(403).json({ msg: "You are not admin" });
     try {
         const event = await prisma.event.findFirst({
             where: {

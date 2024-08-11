@@ -3,7 +3,6 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
 } from "react-router-dom";
 import AboutEvent from "./pages/admin/events/AboutEvent";
 import Members from "./pages/admin/members/Members";
@@ -18,6 +17,7 @@ const StudentLayout = lazy(() => import("./pages/student/StudentLayout"));
 const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
 const StudentEvents = lazy(() => import("./pages/student/events/Events"));
 const AddEvents = lazy(()=> import("./pages/admin/addEvents/AddEvents"));
+const AboutEventStudent = lazy(()=> import("./pages/student/events/AboutEvent"));
 const App = () => {
   return (
     <Router>
@@ -42,10 +42,12 @@ const App = () => {
           <Route path="/student" element={<StudentLayout />}>
             <Route index element={<StudentHome />} />
             <Route path="events" element={<StudentEvents />} />
+            <Route path="event/:clubId/:eventId" element={<AboutEventStudent/>}/>
           </Route>
 
           {/* Redirect to signin if route not found */}
           {/* <Route path="*" element={<Navigate to="/signin" />} /> */}
+          <Route path="*" element={<h1>Page not found</h1>} />
         </Routes>
       </Suspense>
     </Router>

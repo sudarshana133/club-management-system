@@ -20,6 +20,7 @@ interface EventCardProps {
   description: string;
   date: Date;
   venue: string;
+  clubId:string;
 }
 
 const LatestEvents = () => {
@@ -58,6 +59,7 @@ const LatestEvents = () => {
               description={event.description}
               date={event.date}
               venue={event.venue}
+              clubId={event.clubId}
             />
           ))
         ) : (
@@ -75,7 +77,8 @@ const EventCard: React.FC<EventCardProps> = ({
   description,
   date,
   venue,
-  id
+  id,
+  clubId,
 }) => {
     const navigate = useNavigate();
   return (
@@ -97,7 +100,7 @@ const EventCard: React.FC<EventCardProps> = ({
       <div className="p-6">
         <Button 
             className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition"
-            onClick={()=>{navigate(`/events/${id}`)}}
+            onClick={()=>{navigate(`/student/event/${clubId}/${id}`)}}
         >
           View Details
         </Button>

@@ -7,4 +7,9 @@ type Events = {
     fees: number | null;
     clubId: string;
 }
-export type { Events }
+type Club = {
+    uId: string;
+    clubName: string;
+    adminId: string;
+} | null
+export type { Events,Club }

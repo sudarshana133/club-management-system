@@ -1,13 +1,13 @@
 import { Outlet } from 'react-router-dom'
-import Sidebar from '../../components/admincomponents/Sidebar';
-import Bottombar from '../../components/admincomponents/Bottombar';
+import Sidebar from '../../components/adminComponents/Sidebar';
+import Bottombar from '../../components/adminComponents/Bottombar';
 
 const AdminLayout = () => {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex flex-1">
         {/* Large screen mode */}
-        <div className="hidden md:block w-60">
+        <div className="hidden md:block w-64">
           <Sidebar />
         </div>
         {/* Small screen mode */}
