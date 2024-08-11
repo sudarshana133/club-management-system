@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import AboutEvent from "./pages/admin/events/AboutEvent";
 import Members from "./pages/admin/members/Members";
+import AddMembers from "./pages/admin/members/AddMembers";
 
 const Signin = lazy(() => import("./pages/signin/Signin"));
 const SignUp = lazy(() => import("./pages/signup/Signup"));
@@ -34,6 +35,7 @@ const App = () => {
             <Route path="addevent" element={<AddEvents />} />
             <Route path="event" element={<AboutEvent/>}/>
             <Route path="members" element={<Members/>}/>
+            <Route path="addMembers" element={<AddMembers/>}/>
           </Route>
 
           {/* Student routes */}

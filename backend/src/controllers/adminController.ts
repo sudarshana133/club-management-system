@@ -9,7 +9,7 @@ const viewMembers = async(req:CustomReq,res:Response)=>{
     try{
         const response = await prisma.club.findMany({
             where:{
-                adminId
+                adminId,
             },
             include:{
                 members:true
@@ -32,6 +32,15 @@ const viewMembers = async(req:CustomReq,res:Response)=>{
         return res.status(200).json({msg:memberDetails});
     }catch(err){
         return res.status(500).json({msg:"internal server error new"});
+    }
+}
+
+const viewAllMembers = async (req:CustomReq,res:Response)=>{
+    try{
+        const response = await prisma.user.findMany();
+        return res.status(200).json({msg:response});
+    }catch(err){
+        return res.status(500).json({msg:err});
     }
 }
 
@@ -145,4 +154,4 @@ const removeMember = async (req: CustomReq, res: Response) => {
         res.status(500).json({ msg: "error" + error.message });
     }
 }
-export { addMembers, selectCoordinators, removeMember, viewMembers }
+export { addMembers, selectCoordinators, removeMember, viewMembers, viewAllMembers }
