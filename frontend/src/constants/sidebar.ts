@@ -26,6 +26,11 @@ const sidebarItems: SidebarItem[] = [
         href:"/admin/members",
         label:"Members",
         icon: User
+    },
+    {
+        href:"/admin/addMembers",
+        label:"addMembers",
+        icon: PlusCircleIcon
     }
 ]
 export default sidebarItems;
