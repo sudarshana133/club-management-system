@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { Edit, Trash, Loader } from "lucide-react";
+import { Edit, Trash, Loader, Sparkles } from "lucide-react";
 import DeleteAlert from "../../../components/adminComponents/DeleteAlert";
 import UpdateModal from "../../../components/adminComponents/UpdateEvent";
 import { Button } from "../../../components/ui/button";
@@ -117,7 +117,9 @@ const Events = () => {
   const expandClubDetails = (event: Events) => {
     navigate("/admin/event", { state: { event } });
   };
-
+  const handleAI = async()=>{
+    
+  }
   useEffect(() => {
     getClubEvents();
   }, []);
@@ -136,6 +138,9 @@ const Events = () => {
                 {event.title}
               </h2>
               <div className="flex space-x-2">
+                <Button className="relative bg-gradient-to-tr ai" onClick={handleAI}>
+                  <Sparkles />
+                </Button>
                 <Button
                   onClick={(e) => {
                     e.stopPropagation();
@@ -170,9 +175,7 @@ const Events = () => {
             </div>
             <p className="text-gray-400 mb-4">{event.description}</p>
             <div className="flex justify-between items-center text-gray-500">
-              <span className="flex-1 text-left capitalize">
-                {event.venue}
-              </span>
+              <span className="flex-1 text-left capitalize">{event.venue}</span>
               <span className="flex-1 text-center">
                 {new Date(event.date).toLocaleDateString()}
               </span>
