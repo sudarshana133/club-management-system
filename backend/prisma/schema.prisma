@@ -28,7 +28,6 @@ model User {
   registeredEvents RegisteredEvent[]
   adminOf          Club?
   team             Team[]            @relation("TeamMembers")
-  soloEvents       SoloEvent[]
 }
 
 model Club {
@@ -41,19 +40,11 @@ model Club {
 }
 
 model Team {
-  id     String  @id @default(uuid())
-  name   String
-  users  User[]  @relation("TeamMembers")
-  events Event[] @relation("EventTeams")
-}
-
-model SoloEvent {
-  userId  String
-  eventId String
-  user    User   @relation(fields: [userId], references: [uId])
-  event   Event  @relation(fields: [eventId], references: [uId])
-
-  @@id([userId, eventId])
+  uId      String  @id @default(uuid())
+  name     String?
+  users    User[]  @relation("TeamMembers")
+  events   Event   @relation(fields: [eventUId], references: [uId])
+  eventUId String
 }
 
 // todo -> add event type as solo event or team event
@@ -65,12 +56,12 @@ model Event {
   venue              String
   fees               Int?              @default(0)
   clubId             String
+  memberCount        Int               @default(0)
   coordinators       Coordinator[]
   registeredStudents RegisteredEvent[]
   club               Club              @relation(fields: [clubId], references: [uId], onDelete: Cascade)
   type               EventType
-  teams              Team[]            @relation("EventTeams")
-  soloEvents         SoloEvent[]
+  teams              Team[]
 }
 
 model Member {
