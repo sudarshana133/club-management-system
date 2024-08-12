@@ -1,14 +1,14 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { Edit, Trash, Loader, Sparkles } from "lucide-react";
+import { Edit, Trash, Loader } from "lucide-react";
 import DeleteAlert from "../../../components/adminComponents/DeleteAlert";
 import UpdateModal from "../../../components/adminComponents/UpdateEvent";
 import { Button } from "../../../components/ui/button";
 import { useToast } from "../../../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import AIGenerator from "../../../components/adminComponents/AIGenerator";
-
+import { AIIcon } from "../../../components/adminComponents/CustomIcon";
 
 type Events = {
   uId: string;
@@ -19,7 +19,6 @@ type Events = {
   fees: number | null;
   clubId: string;
 };
-
 
 const Events = () => {
   const [events, setEvents] = useState<Events[]>([]);
@@ -40,6 +39,7 @@ const Events = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      localStorage.setItem("events", JSON.stringify(res.data.msg[0].events));
       setEvents(res.data.msg[0].events);
     } catch (error) {
       console.log(error);
@@ -59,11 +59,13 @@ const Events = () => {
             },
           }
         );
-        setEvents(
-          events.map((event) =>
+        setEvents((prevEvents) => {
+          const updatedEvents = prevEvents.map((event) =>
             event.uId === selectedEvent.uId ? updatedEvent : event
-          )
-        );
+          );
+          localStorage.setItem("events", JSON.stringify(updatedEvents));
+          return updatedEvents;
+        });
         toast({
           title: "Updated event",
           description: "Successfully updated event",
@@ -98,7 +100,13 @@ const Events = () => {
           },
         });
 
-        setEvents(events.filter((event) => event.uId !== deleteId));
+        setEvents((prevEvents) => {
+          const updatedEvents = prevEvents.filter(
+            (event) => event.uId !== deleteId
+          );
+          localStorage.setItem("events", JSON.stringify(updatedEvents));
+          return updatedEvents;
+        });
         toast({
           title: "Delete",
           description: "Deleted event successfully",
@@ -123,7 +131,14 @@ const Events = () => {
   };
 
   useEffect(() => {
-    getClubEvents();
+    const storedEvents = localStorage.getItem("events");
+
+    if (storedEvents) {
+      // Assuming events are stored as a JSON string
+      setEvents(JSON.parse(storedEvents));
+    } else {
+      getClubEvents();
+    }
   }, []);
 
   return (
@@ -140,13 +155,15 @@ const Events = () => {
                 {event.title}
               </h2>
               <div className="flex space-x-2">
-                <Button className="text-grey-400 hover:text-blue-600 p-2 rounded flex items-center"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setOpenAIModal(true);
-                  setSelectedEvent(event);
-                }}>
-                  <Sparkles />
+                <Button
+                  className="text-grey-400 hover:text-blue-600 p-2 flex items-center rounded-full border-white bord"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setOpenAIModal(true);
+                    setSelectedEvent(event);
+                  }}
+                >
+                  <AIIcon/>
                 </Button>
                 <Button
                   onClick={(e) => {

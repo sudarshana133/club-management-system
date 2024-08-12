@@ -8,7 +8,6 @@ datasource db {
 }
 
 enum UserType {
-
   ADMIN
   STUDENT
 }
@@ -34,6 +33,16 @@ model Club {
   adminId  String   @unique
 }
 
+model Team {
+  userID String 
+  eventID String
+  user User @relation(fields: [userID],references: [uId])
+  event Event[] @relation(fields: [eventID],references:[uId])
+
+  @@id([userID,eventID])
+}
+
+// todo -> add event type as solo event or team event
 model Event {
   uId                String            @id @default(uuid())
   title              String
@@ -45,6 +54,7 @@ model Event {
   coordinators       Coordinator[]
   registeredStudents RegisteredEvent[]
   club               Club              @relation(fields: [clubId], references: [uId], onDelete: Cascade)
+  soloOrTeam         Boolean
 }
 
 model Member {

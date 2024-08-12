@@ -11,6 +11,14 @@ import {
   FormLabel,
   FormMessage,
 } from "../../../components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../../components/ui/select";
+
 import { Input } from "../../../components/ui/input";
 import { addEventFormSchema as formSchema } from "../../../schemas/addEventSchema";
 import { getClubId } from "../../../utils/getclubid";
@@ -24,7 +32,7 @@ export default function AddEvents() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const token = Cookies.get("token") as string;
-  
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -73,6 +81,7 @@ export default function AddEvents() {
           },
         }
       );
+      localStorage.removeItem("events");
       toast({
         title: "Success!",
         description: "Added event successfully",
@@ -118,6 +127,16 @@ export default function AddEvents() {
               )}
             />
           ))}
+          {/* todo -> get the value of event type from frontend */}
+          <Select>
+            <SelectTrigger className="w-full bg-gray-600 text-white">
+              <SelectValue placeholder="Event type" />
+            </SelectTrigger>
+            <SelectContent className="dark">
+              <SelectItem value="light">Solo Event</SelectItem>
+              <SelectItem value="dark">Team Event</SelectItem>
+            </SelectContent>
+          </Select>
           <Button
             type="submit"
             disabled={isLoading}

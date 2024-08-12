@@ -1,5 +1,6 @@
 import React from "react";
-import { LayoutDashboardIcon, Calendar, PlusCircleIcon, User } from "lucide-react"
+import { LayoutDashboardIcon, Calendar, PlusCircleIcon,  Users } from "lucide-react"
+import { AddMember } from "../components/adminComponents/CustomIcon";
 type SidebarItem = {
     href: string;
     label: string;
@@ -25,12 +26,12 @@ const sidebarItems: SidebarItem[] = [
     {
         href:"/admin/members",
         label:"Members",
-        icon: User
+        icon: Users
     },
     {
         href:"/admin/addMembers",
         label:"Add Members",
-        icon: PlusCircleIcon
+        icon: AddMember
     }
 ]
 export default sidebarItems;
