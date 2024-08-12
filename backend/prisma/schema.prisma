@@ -12,6 +12,11 @@ enum UserType {
   STUDENT
 }
 
+enum EventType {
+  SOLO
+  TEAM
+}
+
 model User {
   uId              String            @id @default(uuid())
   email            String            @unique
@@ -22,6 +27,8 @@ model User {
   members          Member[]
   registeredEvents RegisteredEvent[]
   adminOf          Club?
+  team             Team[]            @relation("TeamMembers")
+  soloEvents       SoloEvent[]
 }
 
 model Club {
@@ -34,12 +41,19 @@ model Club {
 }
 
 model Team {
-  userID String 
-  eventID String
-  user User @relation(fields: [userID],references: [uId])
-  event Event[] @relation(fields: [eventID],references:[uId])
+  id     String  @id @default(uuid())
+  name   String
+  users  User[]  @relation("TeamMembers")
+  events Event[] @relation("EventTeams")
+}
 
-  @@id([userID,eventID])
+model SoloEvent {
+  userId  String
+  eventId String
+  user    User   @relation(fields: [userId], references: [uId])
+  event   Event  @relation(fields: [eventId], references: [uId])
+
+  @@id([userId, eventId])
 }
 
 // todo -> add event type as solo event or team event
@@ -54,7 +68,9 @@ model Event {
   coordinators       Coordinator[]
   registeredStudents RegisteredEvent[]
   club               Club              @relation(fields: [clubId], references: [uId], onDelete: Cascade)
-  soloOrTeam         Boolean
+  type               EventType
+  teams              Team[]            @relation("EventTeams")
+  soloEvents         SoloEvent[]
 }
 
 model Member {
