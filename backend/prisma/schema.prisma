@@ -40,10 +40,10 @@ model Club {
 }
 
 model Team {
-  uId      String @id @default(uuid())
+  uId      String  @id @default(uuid())
   name     String?
-  users    User[] @relation("TeamMembers")
-  events   Event  @relation(fields: [eventUId], references: [uId])
+  users    User[]  @relation("TeamMembers")
+  events   Event   @relation(fields: [eventUId], references: [uId])
   eventUId String
 }
 
@@ -56,6 +56,7 @@ model Event {
   venue              String
   fees               Int?              @default(0)
   clubId             String
+  memberCount        Int               @default(0)
   coordinators       Coordinator[]
   registeredStudents RegisteredEvent[]
   club               Club              @relation(fields: [clubId], references: [uId], onDelete: Cascade)
