@@ -1,14 +1,25 @@
 import { useLocation, useNavigate } from "react-router-dom";
+import { Button } from "../../../components/ui/button";
+import { useState } from "react";
+import AddCoordinatorsModal from "../../../components/adminComponents/AddCoordinatorsModal";
 
+type Coordinators = {
+  email : string;
+  id : string;
+}
 const AboutEvent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const event = location.state?.event;
+  const [isModalOpen,setIsModalOpen] = useState<boolean>(false);
+  const [selectedCoordinators,setSetSelectedCoordinators] = useState<Coordinators[]>([])
 
   if (!event) {
     return <div>No event data found.</div>;
   }
-
+  const handleAddCoordinators = ()=>{
+    setIsModalOpen(true);
+  }
   return (
     <div className="flex justify-center mt-10">
       <div className="w-full max-w-2xl bg-gray-900 text-white shadow-xl rounded-lg overflow-hidden">
@@ -16,6 +27,7 @@ const AboutEvent = () => {
           <h2 className="text-3xl font-bold text-white">{event.title}</h2>
         </div>
         <div className="p-6 space-y-6">
+          <Button className="bg-gradient-to-r from-blue-700 to-blue-500" onClick={handleAddCoordinators}>Add Coordinators</Button>
           <div className="border-b border-gray-700 pb-4">
             <h3 className="text-lg font-semibold text-blue-300 mb-2">
               Description
@@ -34,20 +46,23 @@ const AboutEvent = () => {
           </div>
           <div>
             <h3 className="text-lg font-semibold text-blue-300 mb-2">Fees</h3>
-            <p>
-              {event.fees ? `₹${event.fees}` : "Free"}
-            </p>
+            <p>{event.fees ? `₹${event.fees}` : "Free"}</p>
           </div>
         </div>
         <div className="bg-gray-800 text-center py-4">
-          <button
+          <Button
             onClick={() => navigate("/admin/events")}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition transform hover:scale-105"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition transform hover:scale-105 -z-10"
           >
             Back to Events
-          </button>
+          </Button>
         </div>
       </div>
+      {
+        isModalOpen && (
+          <AddCoordinatorsModal open={isModalOpen} onClose={()=>setIsModalOpen(false)}/>
+        )
+      }
     </div>
   );
 };

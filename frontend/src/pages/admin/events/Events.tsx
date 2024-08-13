@@ -9,6 +9,7 @@ import { useToast } from "../../../components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import AIGenerator from "../../../components/adminComponents/AIGenerator";
 import { AIIcon } from "../../../components/adminComponents/CustomIcon";
+import EventSkeleton from "../../../components/adminComponents/EventSkeleton";
 
 type Events = {
   uId: string;
@@ -28,20 +29,23 @@ const Events = () => {
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<Events | null>(null);
   const [openAIModal, setOpenAIModal] = useState<boolean>(false);
+  const [isLoading,setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const token = Cookies.get("token");
   const navigate = useNavigate();
 
   const getClubEvents = async () => {
     try {
+      setIsLoading(true);
       const res = await axios.get("http://localhost:8000/event/getEvent", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      localStorage.setItem("events", JSON.stringify(res.data.msg[0].events));
       setEvents(res.data.msg[0].events);
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.log(error);
     }
   };
@@ -63,7 +67,6 @@ const Events = () => {
           const updatedEvents = prevEvents.map((event) =>
             event.uId === selectedEvent.uId ? updatedEvent : event
           );
-          localStorage.setItem("events", JSON.stringify(updatedEvents));
           return updatedEvents;
         });
         toast({
@@ -104,7 +107,6 @@ const Events = () => {
           const updatedEvents = prevEvents.filter(
             (event) => event.uId !== deleteId
           );
-          localStorage.setItem("events", JSON.stringify(updatedEvents));
           return updatedEvents;
         });
         toast({
@@ -131,16 +133,18 @@ const Events = () => {
   };
 
   useEffect(() => {
-    const storedEvents = localStorage.getItem("events");
-
-    if (storedEvents) {
-      // Assuming events are stored as a JSON string
-      setEvents(JSON.parse(storedEvents));
-    } else {
       getClubEvents();
-    }
   }, []);
 
+  if(isLoading) {
+    return (
+      <div className="space-y-2">
+        {Array.from({ length: 4 }, (_, index) => (
+          <EventSkeleton key={index} />
+        ))}
+      </div>
+    )
+  }
   return (
     <div className="p-6 bg-gray-900 text-white mb-10 md:mb-0">
       <div className="space-y-6">

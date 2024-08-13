@@ -31,8 +31,8 @@ import { formElements } from "../../../constants/addeventform";
 export default function AddEvents() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
+  const [eventType, setEventType] = useState<string>("");
   const token = Cookies.get("token") as string;
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -74,10 +74,12 @@ export default function AddEvents() {
           fees: fee,
           date: values.date,
           clubId,
+          type: values.eventType,
+          numberOfMembers: values.numberOfMembers,
         },
         {
           headers: {
-            Authorization: `Bearer ${token}`, // Required by authMiddleware
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -96,7 +98,9 @@ export default function AddEvents() {
       setIsLoading(false);
     }
   };
-
+  const handleEventTypeChange = (value: "SOLO"|"TEAM") => {
+    setEventType(value);
+  };
   return (
     <div className="m-10">
       <Form {...form}>
@@ -127,16 +131,52 @@ export default function AddEvents() {
               )}
             />
           ))}
-          {/* todo -> get the value of event type from frontend */}
-          <Select>
-            <SelectTrigger className="w-full bg-gray-600 text-white">
-              <SelectValue placeholder="Event type" />
-            </SelectTrigger>
-            <SelectContent className="dark">
-              <SelectItem value="light">Solo Event</SelectItem>
-              <SelectItem value="dark">Team Event</SelectItem>
-            </SelectContent>
-          </Select>
+
+          <FormField
+            control={form.control}
+            name="eventType"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-lg font-medium text-gray-200">
+                  Event Type
+                </FormLabel>
+                <Select {...field} onValueChange={handleEventTypeChange}>
+                  <SelectTrigger className="w-full bg-gray-600 text-white">
+                    <SelectValue placeholder="Select Event Type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="SOLO">Solo Event</SelectItem>
+                    <SelectItem value="TEAM">Team Event</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {eventType === "TEAM" && (
+            <FormField
+              control={form.control}
+              name="numberOfMembers"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-lg font-medium text-gray-200">
+                    Number of Members
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter number of members"
+                      {...field}
+                      type="number"
+                      className="mt-1 p-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-gray-700 text-gray-200"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
           <Button
             type="submit"
             disabled={isLoading}

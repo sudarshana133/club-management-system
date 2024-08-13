@@ -8,15 +8,18 @@ const prisma = new PrismaClient();
 
 // adding events to a club
 const addEvent = async (req: Request, res: Response) => {
-    const { title, description, date, venue, fees, clubId } = req.body;
+    const { title, description, date, venue, fees, clubId,type,memberCount } = req.body;
     const data = {
         title,
         description,
         date,
         venue,
         fees,
-        clubId
+        clubId,
+        type,
+        memberCount
     }
+    console.log(data);
     const success = addEventSchema.safeParse(data);
     if (!success.success) {
         return res.status(400).json({
@@ -33,7 +36,9 @@ const addEvent = async (req: Request, res: Response) => {
                 fees,
                 clubId,
                 date: newDate,
-                venue
+                venue,
+                type,
+                memberCount,
             }
         })
         return res.status(200).json({

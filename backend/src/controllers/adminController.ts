@@ -4,43 +4,42 @@ import { CustomReq } from "./middleware";
 
 const prisma = new PrismaClient();
 
-const viewMembers = async(req:CustomReq,res:Response)=>{
+const viewMembers = async (req: CustomReq, res: Response) => {
     const adminId = req.userId;
-    try{
+    try {
         const response = await prisma.club.findMany({
-            where:{
+            where: {
                 adminId,
             },
-            include:{
-                members:true
+            include: {
+                members: true
             }
         });
-        let allMembers:any = [];
-        for(let i=0;i<response.length;i++){
+        let allMembers: any = [];
+        for (let i = 0; i < response.length; i++) {
             allMembers = response[i].members
         }
         const memberDetails = await Promise.all(
-            allMembers.map(async(member:any)=>{
+            allMembers.map(async (member: any) => {
                 return prisma.user.findFirst({
-                    where:{
-                        uId:member.studentId
+                    where: {
+                        uId: member.studentId
                     }
                 })
             })
         )
-        console.log(memberDetails);
-        return res.status(200).json({msg:memberDetails});
-    }catch(err){
-        return res.status(500).json({msg:"internal server error new"});
+        return res.status(200).json({ msg: memberDetails });
+    } catch (err) {
+        return res.status(500).json({ msg: "internal server error new" });
     }
 }
 
-const viewAllMembers = async (req:CustomReq,res:Response)=>{
-    try{
+const viewAllMembers = async (req: CustomReq, res: Response) => {
+    try {
         const response = await prisma.user.findMany();
-        return res.status(200).json({msg:response});
-    }catch(err){
-        return res.status(500).json({msg:err});
+        return res.status(200).json({ msg: response });
+    } catch (err) {
+        return res.status(500).json({ msg: err });
     }
 }
 
@@ -48,19 +47,19 @@ const addMembers = async (req: CustomReq, res: Response) => {
     const uIds: string[] = req.body.uIds;
     const adminId = req.userId;
     let club;
-    try{
+    try {
         club = await prisma.club.findFirst({
-            where:{
+            where: {
                 adminId
             }
         })
-        if(!club){
+        if (!club) {
             return res.json({
-                msg:"not admin"
+                msg: "not admin"
             })
         }
-    }catch(err){
-        return res.json({msg:err});
+    } catch (err) {
+        return res.json({ msg: err });
     }
     const clubId = club.uId
     if (uIds.length === 0) return res.status(403).json({ msg: "User not present to add as members" });
@@ -112,23 +111,23 @@ const removeMember = async (req: CustomReq, res: Response) => {
     const uIds: string[] = req.body.uIds;
     const adminId = req.userId;
     let club;
-    try{
+    try {
         club = await prisma.club.findFirst({
-            where:{
+            where: {
                 adminId
             }
         })
-        if(!club){
+        if (!club) {
             return res.json({
-                msg:"not admin"
+                msg: "not admin"
             })
         }
-    }catch(err){
-        return res.json({msg:err});
+    } catch (err) {
+        return res.json({ msg: err });
     }
     const clubId = club.uId
-    if(req.role === "STUDENT") return res.status(403).json({msg:"You are not admin"});
-    if(uIds.length === 0) return res.status(403).json({msg:"There are not members to remove"});
+    if (req.role === "STUDENT") return res.status(403).json({ msg: "You are not admin" });
+    if (uIds.length === 0) return res.status(403).json({ msg: "There are not members to remove" });
     try {
         const MembersNotPresent: string[] = [];
         for (let i = 0; i < uIds.length; i++) {
@@ -154,4 +153,31 @@ const removeMember = async (req: CustomReq, res: Response) => {
         res.status(500).json({ msg: "error" + error.message });
     }
 }
-export { addMembers, selectCoordinators, removeMember, viewMembers, viewAllMembers }
+const searchMembers = async (req: Request, res: Response) => {
+    const emailName = req.body.emailName;
+    if (!emailName) return res.status(200).json({ msg: "No emailName specified." });
+    try {
+        var members = await prisma.member.findMany({
+            where: {
+                user: {
+                    email: {
+                        startsWith: emailName
+                    }
+                },
+            },
+            include:{
+                user:{
+                    select:{
+                        email: true
+                    }
+                }
+            }
+        });
+        if (members.length == 0) return res.status(404).json({msg:"User not found"});
+        members = members.slice(0,5);
+        res.status(200).json({msg:members})
+    } catch (error: any) {
+        res.status(500).json({ msg: "error: " + error.message });
+    }
+}
+export { addMembers, selectCoordinators, removeMember, viewMembers, viewAllMembers,searchMembers }

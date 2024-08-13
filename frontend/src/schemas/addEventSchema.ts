@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+const EventType = z.enum(["SOLO", "TEAM"]);
 export const addEventFormSchema = z.object({
     title: z.string()
         .min(4, { message: "Title should be at least 4 characters long" })
@@ -12,5 +12,7 @@ export const addEventFormSchema = z.object({
         .max(500, { message: "Venue should be a maximum of 500 characters" }),
     date: z.string().min(1,{ message: "Date is required" }),
     clubId: z.string({ required_error: "Club ID is required" }),
-    fee:z.string()||z.number()
+    fee:z.string()||z.number(),
+    eventType: EventType,
+    numberOfMembers: z.number().min(1, { message: "Please mention number of members" }).optional(),
 });
