@@ -1,19 +1,32 @@
 import { useState } from "react";
 import ChipComponent from "../shared/ChipComponent";
+import { Coordinators } from "../../pages/admin/events/AboutEvent";
 
 interface DisplayMemberProps {
   emails: string[];
+  setSelectedCoordinators: React.Dispatch<React.SetStateAction<Coordinators[]>>;
+  memberIds:string[];
 }
 
-const DisplayMember: React.FC<DisplayMemberProps> = ({ emails }) => {
+const DisplayMember: React.FC<DisplayMemberProps> = ({ emails, setSelectedCoordinators,memberIds }) => {
   const [selected, setSelected] = useState<string>("");
   const [isSelected, setIsSelected] = useState<boolean>(false);
+
+
   if (!Array.isArray(emails)) return null;
 
-  const handleClick = (email: string) => {
+  const handleClick = (email: string,memberId:string) => {
     setSelected(email);
     setIsSelected(true);
+    setSelectedCoordinators(prev => [...prev, { email, id: memberId }]);
   };
+
+  const handleRemove = () => {
+    setIsSelected(false);
+    setSelectedCoordinators(prev => prev.filter(coordinator => coordinator.email !== selected));
+    setSelected("");
+  };
+  let i=0;
   return (
     <div>
       <div
@@ -27,10 +40,10 @@ const DisplayMember: React.FC<DisplayMemberProps> = ({ emails }) => {
           emails.map((email) => (
             <div
               key={email}
-              className={`p-2 border-b border-gray-700 last:border-b-0 hover:bg-gray-800 transition-colors ${
+              className={`p-2 border-b border-gray-700 last:border-b-0 hover:bg-gray-800 transition-colors cursor-pointer ${
                 selected === email ? "bg-gray-800" : ""
               }`}
-              onClick={() => handleClick(email)}
+              onClick={() => {handleClick(email,memberIds[i++])}}
             >
               {email}
             </div>
@@ -41,11 +54,7 @@ const DisplayMember: React.FC<DisplayMemberProps> = ({ emails }) => {
           </p>
         )}
       </div>
-      {
-        isSelected && (
-          <ChipComponent value={selected}/>
-        )
-      }
+      {isSelected && <ChipComponent value={selected} onRemove={handleRemove} />}
     </div>
   );
 };

@@ -72,7 +72,18 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
                 events: true
             }
         });
-        return res.status(200).json({msg: response})
+        var coordinators;
+        for(let i=0;i<response.length;i++) {
+             coordinators = await prisma.event.findMany({
+                where:{
+                    clubId: response[i].uId
+                },
+                include:{
+                    coordinators:true
+                }
+            })
+         }
+        return res.status(200).json({msg: response,coordinators})
     } catch (err) {
         return res.status(500).json({
             msg: err

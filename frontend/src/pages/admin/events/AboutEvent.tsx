@@ -3,23 +3,26 @@ import { Button } from "../../../components/ui/button";
 import { useState } from "react";
 import AddCoordinatorsModal from "../../../components/adminComponents/AddCoordinatorsModal";
 
-type Coordinators = {
-  email : string;
-  id : string;
-}
+export type Coordinators = {
+  email: string;
+  id: string;
+};
+
 const AboutEvent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const event = location.state?.event;
-  const [isModalOpen,setIsModalOpen] = useState<boolean>(false);
-  const [selectedCoordinators,setSetSelectedCoordinators] = useState<Coordinators[]>([])
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [selectedCoordinators, setSelectedCoordinators] = useState<Coordinators[]>([]);
 
   if (!event) {
     return <div>No event data found.</div>;
   }
-  const handleAddCoordinators = ()=>{
+
+  const handleAddCoordinators = () => {
     setIsModalOpen(true);
-  }
+  };
+
   return (
     <div className="flex justify-center mt-10">
       <div className="w-full max-w-2xl bg-gray-900 text-white shadow-xl rounded-lg overflow-hidden">
@@ -27,11 +30,11 @@ const AboutEvent = () => {
           <h2 className="text-3xl font-bold text-white">{event.title}</h2>
         </div>
         <div className="p-6 space-y-6">
-          <Button className="bg-gradient-to-r from-blue-700 to-blue-500" onClick={handleAddCoordinators}>Add Coordinators</Button>
+          <Button className="bg-gradient-to-r from-blue-700 to-blue-500" onClick={handleAddCoordinators}>
+            Add Coordinators
+          </Button>
           <div className="border-b border-gray-700 pb-4">
-            <h3 className="text-lg font-semibold text-blue-300 mb-2">
-              Description
-            </h3>
+            <h3 className="text-lg font-semibold text-blue-300 mb-2">Description</h3>
             <p className="text-gray-300">{event.description}</p>
           </div>
           <div className="border-b border-gray-700 pb-4">
@@ -52,17 +55,21 @@ const AboutEvent = () => {
         <div className="bg-gray-800 text-center py-4">
           <Button
             onClick={() => navigate("/admin/events")}
-            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition transform hover:scale-105 -z-10"
+            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-full transition transform hover:scale-105"
           >
             Back to Events
           </Button>
         </div>
       </div>
-      {
-        isModalOpen && (
-          <AddCoordinatorsModal open={isModalOpen} onClose={()=>setIsModalOpen(false)}/>
-        )
-      }
+      {isModalOpen && (
+        <AddCoordinatorsModal 
+          open={isModalOpen} 
+          onClose={() => setIsModalOpen(false)} 
+          setSelectedCoordinators={setSelectedCoordinators}
+          selectedCoordinators={selectedCoordinators}
+          eventId={event.uId}
+        />
+      )}
     </div>
   );
 };

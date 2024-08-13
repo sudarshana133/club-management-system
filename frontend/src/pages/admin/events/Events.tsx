@@ -11,6 +11,9 @@ import AIGenerator from "../../../components/adminComponents/AIGenerator";
 import { AIIcon } from "../../../components/adminComponents/CustomIcon";
 import EventSkeleton from "../../../components/adminComponents/EventSkeleton";
 
+type Coordinator = {
+  email: string;
+}
 type Events = {
   uId: string;
   title: string;
@@ -19,6 +22,7 @@ type Events = {
   venue: string;
   fees: number | null;
   clubId: string;
+  coordinators : Coordinator[];
 };
 
 const Events = () => {

@@ -168,7 +168,8 @@ const searchMembers = async (req: Request, res: Response) => {
             include:{
                 user:{
                     select:{
-                        email: true
+                        email: true,
+                        uId:true
                     }
                 }
             }
