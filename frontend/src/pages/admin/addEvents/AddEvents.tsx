@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useEffect } from "react";
 
 import { Button } from "../../../components/ui/button";
 import {
@@ -31,7 +32,7 @@ import { formElements } from "../../../constants/addeventform";
 export default function AddEvents() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
-  const [eventType, setEventType] = useState<string>("");
+  const [eventType, setEventType] = useState<string>("SOLO");
   const token = Cookies.get("token") as string;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -42,11 +43,13 @@ export default function AddEvents() {
       date: "",
       clubId: "",
       fee: "0",
+      eventType:"SOLO"
     },
   });
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     const fee = Number(values.fee);
+    const x = Number(values.numberOfMembers)
     let clubId = "";
     try {
       clubId = await getClubId(token);
@@ -75,7 +78,7 @@ export default function AddEvents() {
           date: values.date,
           clubId,
           type: values.eventType,
-          numberOfMembers: values.numberOfMembers,
+          numberOfMembers: x,
         },
         {
           headers: {
@@ -99,8 +102,12 @@ export default function AddEvents() {
     }
   };
   const handleEventTypeChange = (value: "SOLO"|"TEAM") => {
+    form.setValue("eventType",value);
     setEventType(value);
   };
+  useEffect(() => {
+    console.log(eventType); // Logs the updated eventType
+  }, [eventType]);
   return (
     <div className="m-10">
       <Form {...form}>

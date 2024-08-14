@@ -10,30 +10,18 @@ import { useNavigate } from "react-router-dom";
 import AIGenerator from "../../../components/adminComponents/AIGenerator";
 import { AIIcon } from "../../../components/adminComponents/CustomIcon";
 import EventSkeleton from "../../../components/adminComponents/EventSkeleton";
-
-type Coordinator = {
-  email: string;
-}
-type Events = {
-  uId: string;
-  title: string;
-  description: string;
-  date: Date;
-  venue: string;
-  fees: number | null;
-  clubId: string;
-  coordinators : Coordinator[];
-};
+import { Coordinator, Events as EventType } from "../../../utils/types";
+import ShowCoordinators from "../../../components/adminComponents/ShowCoordinators";
 
 const Events = () => {
-  const [events, setEvents] = useState<Events[]>([]);
+  const [events, setEvents] = useState<EventType[]>([]);
   const [loadingId, setLoadingId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [alertOpen, setAlertOpen] = useState(false);
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<Events | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventType | null>(null);
   const [openAIModal, setOpenAIModal] = useState<boolean>(false);
-  const [isLoading,setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const { toast } = useToast();
   const token = Cookies.get("token");
   const navigate = useNavigate();
@@ -46,7 +34,21 @@ const Events = () => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setEvents(res.data.msg[0].events);
+      const { msg, coordinators } = res.data;
+      const coordinatorMap = new Map(
+        coordinators.map((coordinator: Coordinator) => [
+          coordinator.uid,
+          coordinator,
+        ])
+      );
+      const eventsWithCoordinators = msg.map((event: EventType) => ({
+        ...event,
+        coordinators: event.coordinators
+          .map((eventCoordinator) => coordinatorMap.get(eventCoordinator.uid))
+          .filter(Boolean), // Filter out any undefined values
+      }));
+
+      setEvents(eventsWithCoordinators);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -54,7 +56,7 @@ const Events = () => {
     }
   };
 
-  const handleUpdate = async (updatedEvent: Events) => {
+  const handleUpdate = async (updatedEvent: EventType) => {
     if (selectedEvent) {
       setLoadingId(selectedEvent.uId);
       try {
@@ -132,23 +134,24 @@ const Events = () => {
     }
   };
 
-  const expandClubDetails = (event: Events) => {
+  const expandClubDetails = (event: EventType) => {
     navigate("/admin/event", { state: { event } });
   };
 
   useEffect(() => {
-      getClubEvents();
+    getClubEvents();
   }, []);
 
-  if(isLoading) {
+  if (isLoading) {
     return (
       <div className="space-y-2">
         {Array.from({ length: 4 }, (_, index) => (
           <EventSkeleton key={index} />
         ))}
       </div>
-    )
+    );
   }
+  console.log(events);
   return (
     <div className="p-6 bg-gray-900 text-white mb-10 md:mb-0">
       <div className="space-y-6">
@@ -171,7 +174,7 @@ const Events = () => {
                     setSelectedEvent(event);
                   }}
                 >
-                  <AIIcon/>
+                  <AIIcon />
                 </Button>
                 <Button
                   onClick={(e) => {
@@ -179,7 +182,7 @@ const Events = () => {
                     setSelectedEvent(event);
                     setUpdateModalOpen(true);
                   }}
-                  className="text-blue-400 hover:text-blue-600 p-2 rounded flex items-center"
+                  className="text-blue-400 hover:text-blue-600 p-2 rounded flex items-center border border-blue-600"
                   disabled={loadingId === event.uId}
                 >
                   {loadingId === event.uId ? (
@@ -194,7 +197,7 @@ const Events = () => {
                     setDeleteId(event.uId);
                     setAlertOpen(true);
                   }}
-                  className="text-red-400 hover:text-red-600 p-2 rounded flex items-center"
+                  className="text-red-400 hover:text-red-600 p-2 rounded flex items-center border border-red-600"
                   disabled={loadingId === event.uId}
                 >
                   {loadingId === event.uId ? (
@@ -219,6 +222,7 @@ const Events = () => {
                 </span>
               </span>
             </div>
+            <ShowCoordinators coordinators={event.coordinators} />
           </div>
         ))}
       </div>

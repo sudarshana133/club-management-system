@@ -14,5 +14,5 @@ export const addEventFormSchema = z.object({
     clubId: z.string({ required_error: "Club ID is required" }),
     fee:z.string()||z.number(),
     eventType: EventType,
-    numberOfMembers: z.number().min(1, { message: "Please mention number of members" }).optional(),
+    numberOfMembers: z.string().min(1, { message: "Please mention number of members" }).optional(),
 });

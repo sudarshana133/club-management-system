@@ -10,13 +10,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "../ui/alert-dialog";
-import { Input } from "../ui/input";
-import { useEffect, useState } from "react";
-import { useDebounce } from "../../lib/debounce";
+import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import DisplayMember from "./DisplayMember";
 import { Coordinators } from "../../pages/admin/events/AboutEvent";
+import SearchMembers from "./SearchMembers";
 
 interface AddCoordinatorsModalProps {
   open: boolean;
@@ -38,48 +37,6 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
   const [emails, setMemberEmails] = useState<string[]>([]);
   const [memberIds,setMemberIds] = useState<string[]>([]);
   const token = Cookies.get("token");
-
-  useDebounce({
-    value: memberName,
-    delay: 1000,
-    setDebouncedValue: setDebounceVal,
-  });
-
-  const getMembers = async () => {
-    try {
-      if (!debounceVal?.trim()) {
-        setMemberEmails([]);
-        return;
-      }
-
-      const res = await axios.post(
-        "http://localhost:8000/admin/searchmembers",
-        { emailName: debounceVal },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      if (res.status === 404) {
-        setMemberEmails([]);
-      } else {
-        const arrayOfMembers = res.data.msg;
-        const emails: string[] = arrayOfMembers.map(
-          (member: any) => member.user.email
-        );
-        const ids: string[] = arrayOfMembers.map(
-          (member: any) => member.user.uId
-        );
-        console.log(ids);
-        setMemberEmails(emails);
-        setMemberIds(ids);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response?.status === 404) {
-        setMemberEmails([]);
-      } else {
-        console.log(error);
-      }
-    }
-  };
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -105,9 +62,6 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
     }
   };
 
-  useEffect(() => {
-    getMembers();
-  }, [debounceVal]);
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
@@ -121,11 +75,13 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <div className="mb-6">
-          <Input
-            placeholder="Enter coordinator name"
-            className="w-full p-3 rounded-t-lg border border-gray-700 bg-gray-800 text-gray-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-500 transition-all"
-            type="text"
-            onChange={(e) => setMemberName(e.target.value)}
+          <SearchMembers
+            memberName={memberName}
+            debounceVal={debounceVal}
+            setDebounceVal={setDebounceVal}
+            setMemberEmails={setMemberEmails}
+            setMemberIds={setMemberIds}
+            setMemberName={setMemberName}
           />
           <DisplayMember
             emails={emails}

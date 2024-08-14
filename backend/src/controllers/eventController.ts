@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 // adding events to a club
 const addEvent = async (req: Request, res: Response) => {
-    const { title, description, date, venue, fees, clubId,type,memberCount } = req.body;
+    const { title, description, date, venue, fees, clubId, type, memberCount } = req.body;
     const data = {
         title,
         description,
@@ -62,28 +62,52 @@ const getAllEvents = async (req: Request, res: Response) => {
 }
 
 const getSpecificEvent = async (req: CustomReq, res: Response) => {
+    const adminId = req.userId;
+    var clubId;
+    try {
+        const response = await prisma.club.findFirst({
+            where: {
+                adminId
+            }
+        })
+        clubId = response?.uId;
+    } catch (err) {
+        return res.json({
+            msg: err
+        })
+    }
 
     try {
-        const response = await prisma.club.findMany({
+        const response = await prisma.event.findMany({
             where: {
-                adminId: req.userId,
+                clubId
             },
             include: {
-                events: true
+                coordinators: true
             }
-        });
-        var coordinators;
-        for(let i=0;i<response.length;i++) {
-             coordinators = await prisma.event.findMany({
-                where:{
-                    clubId: response[i].uId
-                },
-                include:{
-                    coordinators:true
-                }
+        })
+
+        const coordinatorIDs = response.flatMap((event)=>event.coordinators.map((coordinator)=>coordinator.coordinatorId));
+
+        const coordinators = await Promise.all(
+            coordinatorIDs.map(async(id)=>{
+                return (
+                    await prisma.user.findFirst({
+                        select:{
+                            uId: true,
+                            email:true,
+                        },
+                        where:{
+                            uId: id
+                        },
+                    })
+                )
             })
-         }
-        return res.status(200).json({msg: response,coordinators})
+        );
+        return res.status(200).json({
+            msg: response,
+            coordinators
+        })
     } catch (err) {
         return res.status(500).json({
             msg: err

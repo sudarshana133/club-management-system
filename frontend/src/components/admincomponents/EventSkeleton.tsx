@@ -2,7 +2,7 @@ import { Skeleton } from "../ui/skeleton";
 
 const EventSkeleton = () => {
   return (
-    <div className="border border-gray-700 p-6 rounded-lg cursor-pointer hover:shadow-lg hover:border-teal-400 transition-shadow duration-200 ease-in-out bg-gray-800">
+    <div className="border border-gray-700 p-6 rounded-lg cursor-pointer hover:shadow-lg hover:border-teal-400 transition-shadow duration-200 ease-in-out dark">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold text-blue-300 capitalize">
           <Skeleton className="w-32 h-6" />

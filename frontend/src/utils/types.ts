@@ -1,3 +1,7 @@
+type Coordinator = {
+    uid:string;
+    email: string;
+}
 type Events = {
     uId: string;
     title: string;
@@ -6,10 +10,11 @@ type Events = {
     venue: string;
     fees: number | null;
     clubId: string;
+    coordinators : Coordinator[];
 }
 type Club = {
     uId: string;
     clubName: string;
     adminId: string;
 } | null
-export type { Events,Club }
+export type { Events,Club,Coordinator }
