@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Navigate } from "react-router-dom";
 
 const token = Cookies.get("token");
 
@@ -40,7 +39,7 @@ const Members = () => {
 
   const deleteMembers = async () => {
     try {
-      const response = await axios.put(
+      await axios.put(
         "http://localhost:8000/admin/deleteMembers",
         {
           uIds: deleteIds,

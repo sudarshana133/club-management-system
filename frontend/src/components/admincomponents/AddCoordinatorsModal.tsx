@@ -35,15 +35,15 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
   const [memberName, setMemberName] = useState<string | null>("");
   const [debounceVal, setDebounceVal] = useState<string | null>(memberName);
   const [emails, setMemberEmails] = useState<string[]>([]);
-  const [memberIds,setMemberIds] = useState<string[]>([]);
+  const [memberIds, setMemberIds] = useState<string[]>([]);
   const token = Cookies.get("token");
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       // Extract IDs from selectedCoordinators
-      const ids = selectedCoordinators.map(coordinator => coordinator.id);
-      
+      const ids = selectedCoordinators.map((coordinator) => coordinator.id);
+
       const res = await axios.post(
         `http://localhost:8000/admin/addCoordinator/${eventId}`,
         { ids },
@@ -62,6 +62,41 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
     }
   };
 
+  const getMembers = async () => {
+    try {
+      if (!debounceVal?.trim()) {
+        setMemberEmails([]);
+        return;
+      }
+
+      const res = await axios.post(
+        "http://localhost:8000/admin/searchmembers",
+        { emailName: debounceVal },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.status === 404) {
+        setMemberEmails([]);
+      } else {
+        const arrayOfMembers = res.data.msg;
+        const emails: string[] = arrayOfMembers.map(
+          (member: any) => member.user.email
+        );
+        const ids: string[] = arrayOfMembers.map(
+          (member: any) => member.user.uId
+        );
+        console.log(ids);
+        setMemberEmails(emails);
+        setMemberIds(ids);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        setMemberEmails([]);
+      } else {
+        console.log(error);
+      }
+    }
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
@@ -82,11 +117,12 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
             setMemberEmails={setMemberEmails}
             setMemberIds={setMemberIds}
             setMemberName={setMemberName}
+            searchFunc={getMembers}
           />
           <DisplayMember
             emails={emails}
             setSelectedCoordinators={setSelectedCoordinators}
-            memberIds = {memberIds}
+            memberIds={memberIds}
           />
         </div>
         <AlertDialogFooter className="flex justify-end gap-1">

@@ -181,4 +181,23 @@ const searchMembers = async (req: Request, res: Response) => {
         res.status(500).json({ msg: "error: " + error.message });
     }
 }
-export { addMembers, selectCoordinators, removeMember, viewMembers, viewAllMembers,searchMembers }
+// todo -> problem in this route is as slice is happening so the user who is already a member will also be visible and some users won't be visible
+const searchUsers = async (req:Request, res:Response) =>{
+    const emailName = req.body.emailName;
+    if (!emailName) return res.status(200).json({ msg: "No emailName specified." });
+    try {
+        var users = await prisma.user.findMany({
+            where: {
+                email: {
+                    startsWith: emailName
+                }
+            }
+        });
+        if (users.length == 0) return res.status(404).json({msg:"User not found"});
+        users = users.slice(0,5);
+        res.status(200).json({msg:users})
+    } catch (error: any) {
+        res.status(500).json({ msg: "error: " + error.message });
+    }
+}
+export { addMembers, selectCoordinators, removeMember, viewMembers, viewAllMembers,searchMembers,searchUsers }

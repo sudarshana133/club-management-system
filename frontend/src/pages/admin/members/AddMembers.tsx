@@ -1,24 +1,24 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
-import { Navigate } from "react-router-dom";
 import SearchMembers from "../../../components/adminComponents/SearchMembers";
 import DisplayMember from "../../../components/adminComponents/DisplayMember";
+import { Coordinators } from "../events/AboutEvent";
+import { Member } from "../../../utils/types";
+import { Button } from "../../../components/ui/button";
 
 const token = Cookies.get("token");
 
-type Member = {
-  uId: string;
-  email: string;
-};
-
 const AddMembers = () => {
   const [members, setMembers] = useState<Member[]>([]);
-  const [deleteIds, setDeleteIds] = useState<string[]>([]);
   const [memberName, setMemberName] = useState<string | null>("");
   const [debounceVal, setDebounceVal] = useState<string | null>(memberName);
   const [emails, setMemberEmails] = useState<string[]>([]);
   const [memberIds, setMemberIds] = useState<string[]>([]);
+  const [selectedCoordinators, setSelectedCoordinators] = useState<
+    Coordinators[]
+  >([]);
+
   const getMemberDetails = async () => {
     try {
       const response = await axios.get(
@@ -39,16 +39,12 @@ const AddMembers = () => {
     getMemberDetails();
   }, []);
 
-  const addMemberToAdd = (id: string) => {
-    setDeleteIds([...deleteIds, id]);
-  };
-
   const addMembers = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         "http://localhost:8000/admin/addMembers",
         {
-          uIds: deleteIds,
+          uIds: selectedCoordinators.map((coordinantor) => coordinantor.id),
         },
         {
           headers: {
@@ -56,9 +52,44 @@ const AddMembers = () => {
           },
         }
       );
-      window.location.reload();
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const getUsers = async () => {
+    try {
+      if (!debounceVal?.trim()) {
+        setMemberEmails([]);
+        return;
+      }
+
+      const res = await axios.post(
+        "http://localhost:8000/admin/searchusers",
+        { emailName: debounceVal },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.status === 404) {
+        setMemberEmails([]);
+      } else {
+        const arrayOfMembers = res.data.msg;
+        const emails: string[] = arrayOfMembers.map(
+          (member: Member) => member.email
+        );
+        const ids: string[] = arrayOfMembers.map(
+          (member: Member) => member.uId
+        );
+        console.log(ids);
+        setMemberEmails(emails);
+        setMemberIds(ids);
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 404) {
+        setMemberEmails([]);
+      } else {
+        console.log(error);
+      }
     }
   };
 
@@ -73,17 +104,20 @@ const AddMembers = () => {
           setMemberEmails={setMemberEmails}
           setMemberIds={setMemberIds}
           setMemberName={setMemberName}
+          searchFunc={getUsers}
         />
-        {/* <DisplayMember
+        <DisplayMember
           emails={emails}
-        /> */}
+          memberIds={memberIds}
+          setSelectedCoordinators={setSelectedCoordinators}
+        />
         <div className="mt-4">
-          <button
+          <Button
             onClick={addMembers}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Add Members
-          </button>
+          </Button>
         </div>
       </div>
     </div>
