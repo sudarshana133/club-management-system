@@ -1,19 +1,23 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddCoordinatorsModal from "../../../components/adminComponents/AddCoordinatorsModal";
 import ShowCoordinators from "../../../components/adminComponents/ShowCoordinators";
+import { Coordinator } from "../../../utils/types";
 
-export type Coordinators = {
-  email: string;
-  id: string;
-};
-
+// todo -> remove this state ka thing and fetch particular event only from backend 
+// DONT USE STATE 
 const AboutEvent = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const event = location.state?.event;
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [coordinators, setCoordinators] = useState<Coordinator[]>([]);
+  useEffect(() => {
+    if (event && event.coordinators) {
+      setCoordinators(event.coordinators);
+    }
+  }, [event]);
 
   if (!event) {
     return <div>No event data found.</div>;
@@ -22,9 +26,7 @@ const AboutEvent = () => {
   const handleAddCoordinators = () => {
     setIsModalOpen(true);
   };
-  const deleteCoordinators = async () => {
 
-  };
   return (
     <div className="flex justify-center mt-10">
       <div className="w-full max-w-2xl bg-gray-900 text-white shadow-xl rounded-lg overflow-hidden">
@@ -62,10 +64,11 @@ const AboutEvent = () => {
             <h3 className="text-lg font-semibold text-blue-300 mb-2">
               Coordinators
             </h3>
-            <ShowCoordinators 
-              coordinators={event.coordinators}
-              onDelete={deleteCoordinators}
+            <ShowCoordinators
+              coordinators={coordinators}
+              setCoordinators={setCoordinators}
               isOnDeletePresent
+              eventId={event.uId}
             />
           </div>
         </div>
@@ -80,6 +83,7 @@ const AboutEvent = () => {
       </div>
       {isModalOpen && (
         <AddCoordinatorsModal
+          setCoordinators={setCoordinators}
           open={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           eventId={event.uId}

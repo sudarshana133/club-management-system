@@ -14,32 +14,36 @@ import { useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import DisplayMember from "./DisplayMember";
-import { Coordinators } from "../../pages/admin/events/AboutEvent";
 import SearchMembers from "./SearchMembers";
+import { Coordinator } from "../../utils/types";
 
 interface AddCoordinatorsModalProps {
   open: boolean;
   onClose: () => void;
   eventId: string;
+  setCoordinators:React.Dispatch<React.SetStateAction<Coordinator[]>>
 }
-
+type Member = {
+  id: string;
+  email: string;
+}
 const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
   open,
   onClose,
   eventId,
+  setCoordinators
 }) => {
   const [memberName, setMemberName] = useState<string | null>("");
   const [debounceVal, setDebounceVal] = useState<string | null>(memberName);
   const [emails, setMemberEmails] = useState<string[]>([]);
   const [memberIds, setMemberIds] = useState<string[]>([]);
-  const [selectedCoordinators,setSelectedCoordinators] = useState<Coordinators[]>([]);
+  const [selectedCoordinators,setSelectedCoordinators] = useState<Member[]>([]);
   const token = Cookies.get("token");
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      const ids = selectedCoordinators.map((coordinator) => coordinator.id);
-
+      const ids = selectedCoordinators.map((coordinator)=>coordinator.id);
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/admin/addCoordinator/${eventId}`,
         { ids },
@@ -49,6 +53,7 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
           },
         }
       );
+      // setCoordinators((prev)=>[...prev,]);
 
       if (res.status === 200) {
         onClose();

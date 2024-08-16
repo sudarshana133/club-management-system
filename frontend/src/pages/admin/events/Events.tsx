@@ -219,7 +219,7 @@ const Events = () => {
               <h4 className="text-lg font-semibold text-gray-300">
                 Coordinators are:
               </h4>
-              <ShowCoordinators coordinators={event.coordinators} />
+              <ShowCoordinators coordinators={event.coordinators}/>
             </div>
           </div>
         ))}
