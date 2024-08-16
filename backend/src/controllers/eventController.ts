@@ -90,6 +90,11 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
             }
         })
 
+        type co={
+            email:string,
+            uId:string
+        }
+
         type details = {
             uId:string,
             title:string,
@@ -100,12 +105,12 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
             clubId:string,
             memberCount:number,
             type:string,
-            coordinators:string[]|undefined
+            coordinators:co[]|undefined
         }
         let result:details[]=[];
         
         for(let i=0;i<response.length;i++){
-            let emails:string[] = [];
+            let emails:co[] = [];
             for(let j=0;j<response[i].coordinators.length;j++){
                 const user = await prisma.user.findFirst(
                     {
@@ -115,7 +120,7 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
                     }
                 )
                 if(user){
-                    emails.push(user.email);
+                    emails.push({email:user.email,uId:user.uId});
                 }
             }
             result.push({
