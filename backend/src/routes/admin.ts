@@ -2,7 +2,7 @@ import express from "express";
 import { adminMiddleware, authMiddleware } from "../controllers/middleware";
 import { addMembers,removeMember,searchMembers,selectCoordinators, viewAllMembers, viewMembers,searchUsers, deleteCoordinators } from "../controllers/adminController";
 const adminRouter = express.Router();
-adminRouter.use(authMiddleware,adminMiddleware);
+adminRouter.use(authMiddleware);
 adminRouter.get("/viewMembers",viewMembers);
 adminRouter.post('/addCoordinator/:eventId',selectCoordinators)
 adminRouter.post('/deleteCoordinator/:eventId',deleteCoordinators)

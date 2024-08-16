@@ -115,27 +115,45 @@ const selectCoordinators = async (req: CustomReq, res: Response) => {
 //delete coordinators
 
 const deleteCoordinators = async (req: Request, res: Response) => {
-  const memberIds: string[] = req.body.ids;
+//   const memberIds: string[] = req.body.ids;
   const eventId: string = req.params.eventId;
-  try {
-    for (let i = 0; i < memberIds.length; i++) {
-      const response = await prisma.coordinator.delete({
-        where: {
-          coordinatorId_eventId: {
-            coordinatorId: memberIds[i],
-            eventId,
-          },
-        },
-      });
-    }
+  const coordinatorId:string = req.body.coordinatorId;
+  try{
+    const response = await prisma.coordinator.delete({
+        where:{
+            coordinatorId_eventId:{
+                coordinatorId,
+                eventId
+            }
+        }
+    });
     return res.status(200).json({
-      msg: "deleted coordinators",
-    });
-  } catch (err) {
+        msg:"coordinators deleted"
+    })
+  } catch(err){
     return res.status(500).json({
-      msg: err,
-    });
+        msg:err
+    })
   }
+//   try {
+//     for (let i = 0; i < memberIds.length; i++) {
+//       const response = await prisma.coordinator.delete({
+//         where: {
+//           coordinatorId_eventId: {
+//             coordinatorId: memberIds[i],
+//             eventId,
+//           },
+//         },
+//       });
+//     }
+//     return res.status(200).json({
+//       msg: "deleted coordinators",
+//     });
+//   } catch (err) {
+//     return res.status(500).json({
+//       msg: err,
+//     });
+//   }
 };
 
 // remove members from clubs
