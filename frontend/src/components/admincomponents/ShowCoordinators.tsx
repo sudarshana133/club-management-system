@@ -7,7 +7,7 @@ interface ShowCoordinatorsProps {
 const ShowCoordinators: React.FC<ShowCoordinatorsProps> = ({coordinators}) => {
     // console.log(coordinators)
   return (
-    <div>
+    <div >
         {
             coordinators.map((coordinator: Coordinator)=>(
                 <div key={coordinator.uid}>

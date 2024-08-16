@@ -25,4 +25,9 @@ type Member = {
     eventId: string | null;
     role: string;
 };
-export type { Events, Club, Coordinator, Member }
+type tokenPayload = {
+    id: string;
+    email: string;
+    role: "ADMIN" | "STUDENT";  
+}
+export type { Events, Club, Coordinator, Member,tokenPayload }
