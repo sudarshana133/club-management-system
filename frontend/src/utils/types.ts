@@ -1,7 +1,3 @@
-type Coordinator = {
-    uid: string;
-    email: string;
-}
 type Events = {
     uId: string;
     title: string;
@@ -10,7 +6,7 @@ type Events = {
     venue: string;
     fees: number | null;
     clubId: string;
-    coordinators: Coordinator[];
+    coordinators: string[];
 }
 type Club = {
     uId: string;
@@ -30,4 +26,4 @@ type tokenPayload = {
     email: string;
     role: "ADMIN" | "STUDENT";  
 }
-export type { Events, Club, Coordinator, Member,tokenPayload }
+export type { Events, Club, Member,tokenPayload }

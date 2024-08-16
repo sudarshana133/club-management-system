@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import AIGenerator from "../../../components/adminComponents/AIGenerator";
 import { AIIcon } from "../../../components/adminComponents/CustomIcon";
 import EventSkeleton from "../../../components/adminComponents/EventSkeleton";
-import { Coordinator, Events as EventType } from "../../../utils/types";
+import { Events as EventType } from "../../../utils/types";
 import ShowCoordinators from "../../../components/adminComponents/ShowCoordinators";
 
 const Events = () => {
@@ -29,26 +29,15 @@ const Events = () => {
   const getClubEvents = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/event/getEvent`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const { msg, coordinators } = res.data;
-      const coordinatorMap = new Map(
-        coordinators.map((coordinator: Coordinator) => [
-          coordinator.uid,
-          coordinator,
-        ])
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/event/getEvent`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
       );
-      const eventsWithCoordinators = msg.map((event: EventType) => ({
-        ...event,
-        coordinators: event.coordinators
-          .map((eventCoordinator) => coordinatorMap.get(eventCoordinator.uid))
-          .filter(Boolean), // Filter out any undefined values
-      }));
-
-      setEvents(eventsWithCoordinators);
+      setEvents(res.data.msg);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -61,7 +50,9 @@ const Events = () => {
       setLoadingId(selectedEvent.uId);
       try {
         await axios.put(
-          `${import.meta.env.VITE_BASE_URL}/event/updateEvent/${selectedEvent.uId}`,
+          `${import.meta.env.VITE_BASE_URL}/event/updateEvent/${
+            selectedEvent.uId
+          }`,
           updatedEvent,
           {
             headers: {
@@ -151,7 +142,6 @@ const Events = () => {
       </div>
     );
   }
-  console.log(events);
   return (
     <div className="p-6 bg-gray-900 text-white mb-10 md:mb-0">
       <div className="space-y-6">
@@ -167,12 +157,13 @@ const Events = () => {
               </h2>
               <div className="flex space-x-2">
                 <Button
-                  className="text-grey-400 hover:text-blue-600 p-2 flex items-center rounded-full border-white bord"
+                  className="text-gray-400 hover:text-blue-600 p-2 flex items-center rounded-full border border-white transition-colors duration-150"
                   onClick={(e) => {
                     e.stopPropagation();
                     setOpenAIModal(true);
                     setSelectedEvent(event);
                   }}
+                  variant="ghost"
                 >
                   <AIIcon />
                 </Button>
@@ -182,7 +173,8 @@ const Events = () => {
                     setSelectedEvent(event);
                     setUpdateModalOpen(true);
                   }}
-                  className="text-blue-400 hover:text-blue-600 p-2 rounded flex items-center border border-blue-600"
+                  variant="ghost"
+                  className="text-blue-400 hover:text-blue-600 p-2 rounded flex items-center border border-blue-600 transition-colors duration-150"
                   disabled={loadingId === event.uId}
                 >
                   {loadingId === event.uId ? (
@@ -197,7 +189,8 @@ const Events = () => {
                     setDeleteId(event.uId);
                     setAlertOpen(true);
                   }}
-                  className="text-red-400 hover:text-red-600 p-2 rounded flex items-center border border-red-600"
+                  variant="ghost"
+                  className="text-red-400 hover:text-red-600 p-2 rounded flex items-center border border-red-600 transition-colors duration-150"
                   disabled={loadingId === event.uId}
                 >
                   {loadingId === event.uId ? (
@@ -222,7 +215,12 @@ const Events = () => {
                 </span>
               </span>
             </div>
-            <ShowCoordinators coordinators={event.coordinators} />
+            <div className="mt-4">
+              <h4 className="text-lg font-semibold text-gray-300">
+                Coordinators are:
+              </h4>
+              <ShowCoordinators coordinators={event.coordinators} />
+            </div>
           </div>
         ))}
       </div>

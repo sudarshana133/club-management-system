@@ -20,28 +20,24 @@ import SearchMembers from "./SearchMembers";
 interface AddCoordinatorsModalProps {
   open: boolean;
   onClose: () => void;
-  setSelectedCoordinators: React.Dispatch<React.SetStateAction<Coordinators[]>>;
-  selectedCoordinators: Coordinators[];
   eventId: string;
 }
 
 const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
   open,
   onClose,
-  setSelectedCoordinators,
-  selectedCoordinators,
   eventId,
 }) => {
   const [memberName, setMemberName] = useState<string | null>("");
   const [debounceVal, setDebounceVal] = useState<string | null>(memberName);
   const [emails, setMemberEmails] = useState<string[]>([]);
   const [memberIds, setMemberIds] = useState<string[]>([]);
+  const [selectedCoordinators,setSelectedCoordinators] = useState<Coordinators[]>([]);
   const token = Cookies.get("token");
 
   const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
-      // Extract IDs from selectedCoordinators
       const ids = selectedCoordinators.map((coordinator) => coordinator.id);
 
       const res = await axios.post(

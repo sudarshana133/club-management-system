@@ -27,7 +27,7 @@ const DisplayMember: React.FC<DisplayMemberProps> = ({ emails, setSelectedCoordi
 
   return (
     <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2">
+      <div className="grid grid-cols-1">
         {selectedEmails.map((email, index) => (
           <ChipComponent key={index} value={email} onRemove={() => handleRemove(email)} />
         ))}

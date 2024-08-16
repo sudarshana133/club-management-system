@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { Events } from "../../utils/types";
 import { Textarea } from "../ui/textarea";
+import { AlertDialogDescription } from "@radix-ui/react-alert-dialog";
 
 interface UpdateModalProps {
   open: boolean;
@@ -42,6 +43,7 @@ const UpdateModal = ({ open, onClose, event, onUpdate }: UpdateModalProps) => {
 
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
+      <AlertDialogDescription className="hidden">This is update event</AlertDialogDescription>
       <AlertDialogContent className="bg-gray-800 text-gray-100">
         <AlertDialogHeader>
           <AlertDialogTitle className="text-blue-400">Update Event</AlertDialogTitle>

@@ -14,7 +14,7 @@ export const AIIcon = ()=> {
   return (
     <div className="relative">
       <Sparkle size={13} className="absolute top-[-4px] right-[-1px]"/>
-      <Sparkle className="mr-[4.5px]"/>
+      <Sparkle size={21} className="mr-[4.5px]"/>
       <Sparkle size={13} className="absolute bottom-[-4px] right-[-1px]"/>
     </div>
   )
