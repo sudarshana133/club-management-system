@@ -69,7 +69,7 @@ export default function AddEvents() {
 
     try {
       await axios.post(
-        "http://localhost:8000/event/addEvent",
+        `${import.meta.env.VITE_BASE_URL}/event/addEvent`,
         {
           title: values.title,
           description: values.description,
@@ -78,7 +78,7 @@ export default function AddEvents() {
           date: values.date,
           clubId,
           type: values.eventType,
-          numberOfMembers: x,
+          memberCount: x,
         },
         {
           headers: {

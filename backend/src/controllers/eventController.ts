@@ -62,6 +62,7 @@ const getAllEvents = async (req: Request, res: Response) => {
 }
 
 const getSpecificEvent = async (req: CustomReq, res: Response) => {
+
     const adminId = req.userId;
     var clubId;
     try {
@@ -77,8 +78,10 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
         })
     }
 
+    
+
     try {
-        const response = await prisma.event.findMany({
+        const response= await prisma.event.findMany({
             where: {
                 clubId
             },
@@ -87,33 +90,58 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
             }
         })
 
-        const coordinatorIDs = response.flatMap((event)=>event.coordinators.map((coordinator)=>coordinator.coordinatorId));
-
-        const coordinators = await Promise.all(
-            coordinatorIDs.map(async(id)=>{
-                return (
-                    await prisma.user.findFirst({
-                        select:{
-                            uId: true,
-                            email:true,
-                        },
+        type details = {
+            uId:string,
+            title:string,
+            description:string,
+            date:Date,
+            venue:string,
+            fees:number|null,
+            clubId:string,
+            memberCount:number,
+            type:string,
+            coordinators:string[]|undefined
+        }
+        let result:details[]=[];
+        
+        for(let i=0;i<response.length;i++){
+            let emails:string[] = [];
+            for(let j=0;j<response[i].coordinators.length;j++){
+                const user = await prisma.user.findFirst(
+                    {
                         where:{
-                            uId: id
-                        },
-                    })
+                            uId: response[i].coordinators[j].coordinatorId
+                        }
+                    }
                 )
-            })
-        );
+                if(user){
+                    emails.push(user.email);
+                }
+            }
+            result.push({
+                clubId: response[i].clubId,
+                title: response[i].title,
+                description: response[i].description,
+                uId: response[i].uId,
+                memberCount: response[i].memberCount,
+                type: response[i].type,
+                date: response[i].date,
+                venue: response[i].venue,
+                fees: response[i].fees,
+                coordinators: emails,
+            });
+        }
         return res.status(200).json({
-            msg: response,
-            coordinators
+            msg: result
         })
     } catch (err) {
+        console.log("hi")
         return res.status(500).json({
             msg: err
         })
     }
 }
+
 const getEventOfClub = async (req: CustomReq, res: Response) => {
     const clubId = req.params.clubId;
     const eventId = req.params.eventId;

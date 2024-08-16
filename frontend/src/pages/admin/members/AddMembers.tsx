@@ -22,7 +22,7 @@ const AddMembers = () => {
   const getMemberDetails = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/admin/viewAllMembers",
+        `${import.meta.env.VITE_BASE_URL}/admin/viewAllMembers`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -42,7 +42,7 @@ const AddMembers = () => {
   const addMembers = async () => {
     try {
       await axios.post(
-        "http://localhost:8000/admin/addMembers",
+        `${import.meta.env.VITE_BASE_URL}/admin/addMembers`,
         {
           uIds: selectedCoordinators.map((coordinantor) => coordinantor.id),
         },
@@ -65,7 +65,7 @@ const AddMembers = () => {
       }
 
       const res = await axios.post(
-        "http://localhost:8000/admin/searchusers",
+        `${import.meta.env.VITE_BASE_URL}/admin/searchusers`,
         { emailName: debounceVal },
         { headers: { Authorization: `Bearer ${token}` } }
       );

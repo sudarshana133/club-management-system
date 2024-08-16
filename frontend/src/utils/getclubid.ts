@@ -2,7 +2,7 @@ import axios from "axios";
 
 export async function getClubId(token: string) {
     try {
-        const res = await axios.post("http://localhost:8000/user/getClubId", {
+        const res = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/getClubId`, {
             token
         }, {
             headers: {

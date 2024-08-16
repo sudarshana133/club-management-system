@@ -28,7 +28,7 @@ const LatestEvents = () => {
   const token = Cookies.get("token");
   const getLatestEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:8000/event/latestevents", {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/event/latestevents`, {
         headers: {
           Authorization:
             `Bearer ${token}`,

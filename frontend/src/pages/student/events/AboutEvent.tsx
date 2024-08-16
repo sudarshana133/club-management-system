@@ -22,7 +22,7 @@ const AboutEvent = () => {
   const getEvent = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/event/getEvent/${clubId}/${eventId}`,
+        `${import.meta.env.VITE_BASE_URL}/event/getEvent/${clubId}/${eventId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ const AboutEvent = () => {
   const getClub = async () => {
     try {
       const res = await axios.get(
-        `http://localhost:8000/club/clubs/${clubId}`,
+        `${import.meta.env.VITE_BASE_URL}/club/clubs/${clubId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -73,7 +73,7 @@ const AboutEvent = () => {
     setIsSubmitting(true);
     try {
       const res = await axios.post(
-        "http://localhost:8000/user/event/register",
+        `${import.meta.env.VITE_BASE_URL}/user/event/register`,
         {
           eventId,
         },

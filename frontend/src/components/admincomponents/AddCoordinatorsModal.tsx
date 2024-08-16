@@ -45,7 +45,7 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
       const ids = selectedCoordinators.map((coordinator) => coordinator.id);
 
       const res = await axios.post(
-        `http://localhost:8000/admin/addCoordinator/${eventId}`,
+        `${import.meta.env.VITE_BASE_URL}/admin/addCoordinator/${eventId}`,
         { ids },
         {
           headers: {
@@ -70,7 +70,7 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
       }
 
       const res = await axios.post(
-        "http://localhost:8000/admin/searchmembers",
+        `${import.meta.env.VITE_BASE_URL}/admin/searchmembers`,
         { emailName: debounceVal },
         { headers: { Authorization: `Bearer ${token}` } }
       );

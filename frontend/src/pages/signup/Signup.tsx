@@ -13,7 +13,7 @@ const Signup = () => {
     const sendDetails = async ()=>{
         event?.preventDefault();
         try{
-            const response = await axios.post('http://localhost:8000/user/signup',{
+            const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/user/signup`,{
                 email,
                 password,
                 role

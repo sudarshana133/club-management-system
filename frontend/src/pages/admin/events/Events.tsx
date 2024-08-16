@@ -29,7 +29,7 @@ const Events = () => {
   const getClubEvents = async () => {
     try {
       setIsLoading(true);
-      const res = await axios.get("http://localhost:8000/event/getEvent", {
+      const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/event/getEvent`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,7 +61,7 @@ const Events = () => {
       setLoadingId(selectedEvent.uId);
       try {
         await axios.put(
-          `http://localhost:8000/event/updateEvent/${selectedEvent.uId}`,
+          `${import.meta.env.VITE_BASE_URL}/event/updateEvent/${selectedEvent.uId}`,
           updatedEvent,
           {
             headers: {
@@ -99,7 +99,7 @@ const Events = () => {
       setLoadingId(deleteId);
       try {
         await axios.request({
-          url: `http://localhost:8000/event/deleteEvent/${deleteId}`,
+          url: `${import.meta.env.VITE_BASE_URL}/event/deleteEvent/${deleteId}`,
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,

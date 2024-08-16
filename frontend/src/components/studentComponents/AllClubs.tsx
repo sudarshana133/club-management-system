@@ -16,7 +16,7 @@ const AllClubs: React.FC = () => {
   useEffect(() => {
     const getClubDetails = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/club/clubs", {
+        const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/club/clubs`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

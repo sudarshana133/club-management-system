@@ -16,7 +16,7 @@ const Members = () => {
   const getMemberDetails = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:8000/admin/viewMembers",
+        `${import.meta.env.VITE_BASE_URL}/admin/viewMembers`,
         {
           headers: {
             Authorization: "Bearer " + token,
@@ -40,7 +40,7 @@ const Members = () => {
   const deleteMembers = async () => {
     try {
       await axios.put(
-        "http://localhost:8000/admin/deleteMembers",
+        `${import.meta.env.VITE_BASE_URL}/admin/deleteMembers`,
         {
           uIds: deleteIds,
         },
