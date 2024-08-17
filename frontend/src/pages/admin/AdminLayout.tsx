@@ -11,7 +11,7 @@ const AdminLayout = () => {
           <Sidebar />
         </div>
         {/* Small screen mode */}
-        <div className="fixed flex justify-center bottom-0 w-full md:hidden">
+        <div className="fixed flex justify-center bottom-0 w-full md:hidden z-[999]">
           <Bottombar />
         </div>
         <main className="flex-1 bg-slate-600 md:pl-2 ">

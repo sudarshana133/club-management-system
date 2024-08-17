@@ -19,7 +19,6 @@ const addEvent = async (req: Request, res: Response) => {
         type,
         memberCount
     }
-    console.log(data);
     const success = addEventSchema.safeParse(data);
     if (!success.success) {
         return res.status(400).json({
@@ -78,10 +77,10 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
         })
     }
 
-    
+
 
     try {
-        const response= await prisma.event.findMany({
+        const response = await prisma.event.findMany({
             where: {
                 clubId
             },
@@ -90,37 +89,37 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
             }
         })
 
-        type coordinator={
-            email:string,
-            uId:string
+        type Coordinator = {
+            email: string,
+            uId: string
         }
 
         type details = {
-            uId:string,
-            title:string,
-            description:string,
-            date:Date,
-            venue:string,
-            fees:number|null,
-            clubId:string,
-            memberCount:number,
-            type:string,
-            coordinators:coordinator[]|undefined
+            uId: string,
+            title: string,
+            description: string,
+            date: Date,
+            venue: string,
+            fees: number | null,
+            clubId: string,
+            memberCount: number,
+            type: string,
+            coordinators: Coordinator[] | undefined
         }
-        let result:details[]=[];
-        
-        for(let i=0;i<response.length;i++){
-            let emails:coordinator[] = [];
-            for(let j=0;j<response[i].coordinators.length;j++){
+        let result: details[] = [];
+
+        for (let i = 0; i < response.length; i++) {
+            let emails: Coordinator[] = [];
+            for (let j = 0; j < response[i].coordinators.length; j++) {
                 const user = await prisma.user.findFirst(
                     {
-                        where:{
+                        where: {
                             uId: response[i].coordinators[j].coordinatorId
                         }
                     }
                 )
-                if(user){
-                    emails.push({email:user.email,uId:user.uId});
+                if (user) {
+                    emails.push({ email: user.email, uId: user.uId });
                 }
             }
             result.push({
@@ -150,6 +149,25 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
 const getEventOfClub = async (req: CustomReq, res: Response) => {
     const clubId = req.params.clubId;
     const eventId = req.params.eventId;
+
+    type Coordinator = {
+        email: string,
+        uId: string
+    }
+
+    type Details = {
+        uId: string,
+        title: string,
+        description: string,
+        date: Date,
+        venue: string,
+        fees: number | null,
+        clubId: string,
+        memberCount: number,
+        type: string,
+        coordinators: Coordinator[] | null
+    }
+
     try {
         const event = await prisma.event.findFirst({
             where: {
@@ -160,20 +178,38 @@ const getEventOfClub = async (req: CustomReq, res: Response) => {
                 coordinators: true,
             }
         });
+
         if (!event) return res.status(404).json({ msg: "Event not found" });
-        for(let i=0;i<event?.coordinators.length;i++) { 
-         const emails = await prisma.user.findFirst({
-            where:{
-                uId: event.coordinators[i].coordinatorId
-            }
-         });
-         console.log(emails?.email);
-        }
-        res.status(200).json({ msg: event })
+
+        const coordinators: Coordinator[] = (
+            await Promise.all(
+                event.coordinators.map(async (coordinator) => {
+                    const user = await prisma.user.findFirst({
+                        where: { uId: coordinator.coordinatorId },
+                        select: { email: true, uId: true }
+                    });
+                    return user ? { email: user.email, uId: user.uId } : null;
+                })
+            )
+        ).filter((coordinator): coordinator is Coordinator => coordinator !== null);
+        const result: Details = {
+            uId: event.uId,
+            title: event.title,
+            description: event.description,
+            date: event.date,
+            venue: event.venue,
+            fees: event.fees,
+            clubId: event.clubId,
+            memberCount: event.memberCount,
+            type: event.type,
+            coordinators: coordinators.length > 0 ? coordinators : null
+        };
+        res.status(200).json({msg:result});
     } catch (error: any) {
         res.status(500).json({ msg: "error" + error.message });
     }
 }
+
 const deleteEvent = async (req: CustomReq, res: Response) => {
     const eventId = req.params.eventId;
     if (req.role != UserType.ADMIN) return res.status(403).json({ msg: "You are not admin" });

@@ -11,6 +11,8 @@ type Events = {
     fees: number | null;
     clubId: string;
     coordinators: Coordinator[];
+    memberCount:number;
+    type: "SOLO" | "TEAM";
 }
 type Club = {
     uId: string;

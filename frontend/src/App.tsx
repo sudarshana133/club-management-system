@@ -8,6 +8,7 @@ import AboutEvent from "./pages/admin/events/AboutEvent";
 import Members from "./pages/admin/members/Members";
 import AddMembers from "./pages/admin/members/AddMembers";
 import ProtectedRoute from "./components/shared/ProtectedRoute";
+import Loader from "./components/shared/loader/Loader";
 
 const Signin = lazy(() => import("./pages/signin/Signin"));
 const SignUp = lazy(() => import("./pages/signup/Signup"));
@@ -21,13 +22,12 @@ const AddEvents = lazy(() => import("./pages/admin/addEvents/AddEvents"));
 const AboutEventStudent = lazy(() =>
   import("./pages/student/events/AboutEvent")
 );
-
 const App = () => {
   return (
     <Router>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loader/>}>
         <Routes>
-          <Route path="/" element={<h1>Hello</h1>} />
+          <Route path="/" element={<h1>Home page</h1>} />
           <Route path="/signin" element={<Signin />} />
           <Route path="/signup" element={<SignUp />} />
 

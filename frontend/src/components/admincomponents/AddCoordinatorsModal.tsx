@@ -53,8 +53,14 @@ const AddCoordinatorsModal: React.FC<AddCoordinatorsModalProps> = ({
           },
         }
       );
-      // setCoordinators((prev)=>[...prev,]);
-
+      setCoordinators((prev) => [
+        ...(prev || []),
+        ...selectedCoordinators.map((coordinator) => ({
+          uId: coordinator.id,
+          email: coordinator.email
+        }))
+      ]);      
+      
       if (res.status === 200) {
         onClose();
       }
