@@ -36,7 +36,7 @@ const App = () => {
               <Route index element={<AdminDashboard />} />
               <Route path="events" element={<AdminEvents />} />
               <Route path="addevent" element={<AddEvents />} />
-              <Route path="event" element={<AboutEvent />} />
+              <Route path="clubs/:clubId/events/:eventId" element={<AboutEvent />} />
               <Route path="members" element={<Members />} />
               <Route path="addMembers" element={<AddMembers />} />
             </Route>

@@ -1,24 +1,40 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../../components/ui/button";
 import { useEffect, useState } from "react";
 import AddCoordinatorsModal from "../../../components/adminComponents/AddCoordinatorsModal";
 import ShowCoordinators from "../../../components/adminComponents/ShowCoordinators";
 import { Coordinator } from "../../../utils/types";
+import {Events as EventType} from "../../../utils/types"
+import axios from "axios";
+import { getToken } from "../../../utils/auth";
 
 // todo -> remove this state ka thing and fetch particular event only from backend 
 // DONT USE STATE 
 const AboutEvent = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  const event = location.state?.event;
+  const {clubId,eventId} = useParams();
+  const [event,setEvent] = useState<EventType>();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [coordinators, setCoordinators] = useState<Coordinator[]>([]);
-  useEffect(() => {
-    if (event && event.coordinators) {
-      setCoordinators(event.coordinators);
+  const token = getToken();
+  const getEvent = async()=>{
+    try {
+      const res = await axios.get(
+        `http://localhost:8000/event/getEvent/${clubId}/${eventId}`,
+      {
+        headers:{
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      console.log(res.data);
+      setEvent(res.data.msg);
+    } catch (error) {
+      console.log(error)
     }
-  }, [event]);
-
+  }
+  useEffect(() => {
+    getEvent();
+  }, []);
   if (!event) {
     return <div>No event data found.</div>;
   }

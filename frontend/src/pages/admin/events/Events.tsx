@@ -125,8 +125,8 @@ const Events = () => {
     }
   };
 
-  const expandClubDetails = (event: EventType) => {
-    navigate("/admin/event", { state: { event } });
+  const expandClubDetails = (eventId:string,clubId:string) => {
+    navigate(`/admin/clubs/${clubId}/events/${eventId}`);
   };
 
   useEffect(() => {
@@ -148,7 +148,7 @@ const Events = () => {
         {events.map((event) => (
           <div
             key={event.uId}
-            onClick={() => expandClubDetails(event)}
+            onClick={() => expandClubDetails(event.uId,event.clubId)}
             className="border border-gray-700 p-6 rounded-lg cursor-pointer hover:shadow-lg hover:border-teal-400 transition-shadow duration-200 ease-in-out bg-gray-800"
           >
             <div className="flex justify-between items-center mb-4">

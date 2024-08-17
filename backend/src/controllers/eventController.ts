@@ -90,7 +90,7 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
             }
         })
 
-        type co={
+        type coordinator={
             email:string,
             uId:string
         }
@@ -105,12 +105,12 @@ const getSpecificEvent = async (req: CustomReq, res: Response) => {
             clubId:string,
             memberCount:number,
             type:string,
-            coordinators:co[]|undefined
+            coordinators:coordinator[]|undefined
         }
         let result:details[]=[];
         
         for(let i=0;i<response.length;i++){
-            let emails:co[] = [];
+            let emails:coordinator[] = [];
             for(let j=0;j<response[i].coordinators.length;j++){
                 const user = await prisma.user.findFirst(
                     {
@@ -159,8 +159,16 @@ const getEventOfClub = async (req: CustomReq, res: Response) => {
             include: {
                 coordinators: true,
             }
-        })
+        });
         if (!event) return res.status(404).json({ msg: "Event not found" });
+        for(let i=0;i<event?.coordinators.length;i++) { 
+         const emails = await prisma.user.findFirst({
+            where:{
+                uId: event.coordinators[i].coordinatorId
+            }
+         });
+         console.log(emails?.email);
+        }
         res.status(200).json({ msg: event })
     } catch (error: any) {
         res.status(500).json({ msg: "error" + error.message });
