@@ -234,7 +234,7 @@ const deleteEvent = async (req: CustomReq, res: Response) => {
 
 const updateEvent = async (req: CustomReq, res: Response) => {
     const eventId = req.params.eventId as string
-    const { title, description, date, venue, fees } = req.body;
+    const { title, description, date, venue, fees,type,memberCount } = req.body;
     try {
         const check = await prisma.event.findFirst({
             where: {
@@ -255,7 +255,9 @@ const updateEvent = async (req: CustomReq, res: Response) => {
                 description: description || undefined,
                 date: date ? new Date(date) : undefined,
                 venue: venue || undefined,
-                fees: fees || undefined
+                fees: fees || undefined,
+                type: type || undefined,
+                memberCount: memberCount || undefined
             }
         })
         return res.status(200).json({

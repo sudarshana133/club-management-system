@@ -78,7 +78,7 @@ export default function AddEvents() {
           date: values.date,
           clubId,
           type: values.eventType,
-          memberCount: x||0,
+          memberCount: x||1,
         },
         {
           headers: {

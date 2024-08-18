@@ -26,9 +26,11 @@ const UpdateModal = ({ open, onClose, event, onUpdate }: UpdateModalProps) => {
   const [venue, setVenue] = useState(event?.venue || "");
   const [date, setDate] = useState(event?.date || new Date());
   const [fees, setFees] = useState(event?.fees || 0);
+  const [type, setType] = useState<"SOLO" | "TEAM">(event?.type || "SOLO");
+  const [memberCount, setMemberCount] = useState(event?.memberCount);
 
   const handleUpdate = () => {
-    if (event) {
+    if (event && memberCount !== undefined) {
       onUpdate({
         ...event,
         title,
@@ -36,17 +38,27 @@ const UpdateModal = ({ open, onClose, event, onUpdate }: UpdateModalProps) => {
         venue,
         date,
         fees,
+        type,
+        memberCount: type === "TEAM" ? memberCount : 1,
       });
       onClose();
     }
   };
 
+  const handleEventTypeChange = (value: "SOLO" | "TEAM") => {
+    setType(value);
+  };
+
   return (
     <AlertDialog open={open} onOpenChange={onClose}>
-      <AlertDialogDescription className="hidden">This is update event</AlertDialogDescription>
-      <AlertDialogContent className="bg-gray-800 text-gray-100">
+      <AlertDialogDescription className="hidden">
+        This is update event
+      </AlertDialogDescription>
+      <AlertDialogContent className="bg-gray-800 text-gray-100  overflow-y-scroll max-h-screen pb-16 md:pb-2 scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-700">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-blue-400">Update Event</AlertDialogTitle>
+          <AlertDialogTitle className="text-blue-400">
+            Update Event
+          </AlertDialogTitle>
         </AlertDialogHeader>
         <div className="p-4">
           <form className="space-y-4">
@@ -92,6 +104,34 @@ const UpdateModal = ({ open, onClose, event, onUpdate }: UpdateModalProps) => {
                 className="mt-1 bg-gray-700 text-gray-200"
               />
             </div>
+            <div>
+              <label className="block">Event Type</label>
+              <select
+                className="bg-gray-700 text-gray-100 w-full py-2 pl-3 pr-8 rounded-md border border-gray-600 focus:outline-none focus:ring-2 mt-1 transition-colors duration-200 ease-in-out"
+                onChange={(e) =>
+                  handleEventTypeChange(e.target.value as "SOLO" | "TEAM")
+                }
+                value={type}
+              >
+                <option value="SOLO" className="bg-gray-800 text-gray-200">
+                  Solo Event
+                </option>
+                <option value="TEAM" className="bg-gray-800 text-gray-200">
+                  Team Event
+                </option>
+              </select>
+            </div>
+            {type === "TEAM" && (
+              <div>
+                <label className="block">Number of Members</label>
+                <Input
+                  type="number"
+                  value={memberCount}
+                  onChange={(e) => setMemberCount(parseInt(e.target.value))}
+                  className="mt-1 bg-gray-700 text-gray-200"
+                />
+              </div>
+            )}
           </form>
         </div>
         <AlertDialogFooter>
